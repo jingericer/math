@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lizzy's Purchase</title><p>Question #7, Math Kangaoo 2024</p>
+
+</head>
+<body>
+    <h1>Lizzy's Purchase</h1>
+    <p>Lizzy pays $7 for 3 items. The price of each item is different and is a whole number. How much is the most expensive item?</p>
+    <form id="answerForm">
+        <input type="radio" id="optionA" name="answer" value="A">
+        <label for="optionA">$2</label><br>
+        <input type="radio" id="optionB" name="answer" value="B">
+        <label for="optionB">$3</label><br>
+        <input type="radio" id="optionC" name="answer" value="C">
+        <label for="optionC">$4</label><br>
+        <input type="radio" id="optionD" name="answer" value="D">
+        <label for="optionD">$5</label><br>
+        <input type="radio" id="optionE" name="answer" value="E">
+        <label for="optionE">$6</label><br><br>
+        <button type="submit">Submit Answer</button>
+    </form>
+
+    <div id="feedback" style="display: none; margin-top: 10px;"></div>
+<p>If you need help understanding how to solve it, watch this video:</p>
+    <img src="video.png" alt="youtube" width="28"><a href="https://www.youtube.com/watch?v=UlrqlJ7qb5c" target="_blank">Watch the video</a> by Eric J.
+<p></p>
+<p></p>
+<h2>Next challenge</h2>
+<p>Tile's dimension</p>
+<img src="Next.jpg" alt="Image" width="500">
+    <script>
+        document.getElementById("answerForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (selectedAnswer) {
+                if (selectedAnswer.value === "C") {
+                    alert("Congratulations! You selected the correct answer: $4.");
+                } else {
+                    document.getElementById("feedback").innerHTML = "Sorry, that's not correct. Please try again.";
+                    document.getElementById("feedback").style.display = "block";
+                }
+            } else {
+                alert("Please select an answer.");
+            }
+        });
+    </script>
+</body>
+</html>
