@@ -59,7 +59,38 @@
   <div class="box" id="fifth-box" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
 </div>
 <div class="result" id="result"></div>
+
 <script>
+window.onload = function() {
+    var balls = document.querySelectorAll(".ball");
+    balls.forEach(function(ball) {
+        ball.setAttribute("data-weight", "1");
+        ball.innerText = ball.id.replace("ball", "");
+    });
+
+
+    var randomBallIndex = Math.floor(Math.random() * 8) + 1;
+    var randomBall = document.getElementById("ball" + randomBallIndex);
+    randomBall.setAttribute("data-weight", "2");
+  };
+
+
+  function reset() {
+     location.reload(); 
+  }
+  function showAnswer() {
+    var balls = document.querySelectorAll(".ball");
+    var answer;
+    balls.forEach(function(ball) {
+      if (ball.getAttribute("data-weight") === "2") {
+        answer = ball.innerText;
+      }
+    });
+
+    alert("Correct answer：" + answer);
+  }
+
+
   function allowDrop(event) {
     event.preventDefault();
   }
@@ -113,5 +144,7 @@
     return totalWeight;
   }
 </script>
+<button onclick="reset()">Reset</button>
+<button onclick="showAnswer()">Show Answer</button>
 </body>
 </html>
