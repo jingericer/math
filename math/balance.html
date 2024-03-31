@@ -58,6 +58,7 @@
 <button onclick="reset()">Reset</button>
 <button onclick="showAnswer()">Show Answer</button></div>
 <p></p>
+<div id="counter">Number of Weighs: 0</div>
 <div class="result" id="result"></div>
 <p></p>
   <div class="pan" id="left-pan" align="left" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -75,6 +76,7 @@
 
 
 <script>
+var numWeighs = 0;
 window.onload = function() {
   var form = document.getElementById("ballForm");
   form.addEventListener("submit", function(event) {
@@ -148,6 +150,7 @@ function drop(event) {
 }
 
 function updateBalance() {
+  numWeighs++;
   var leftPan = document.getElementById("left-pan");
   var rightPan = document.getElementById("right-pan");
   var result = document.getElementById("result");
@@ -167,6 +170,7 @@ function updateBalance() {
     rightPan.style.backgroundColor = "green";
     result.innerText = "Right Down";
   }
+ document.getElementById("counter").innerText = "Number of Weighs: " + numWeighs;
 }
 
 function calculateWeight(pan) {
