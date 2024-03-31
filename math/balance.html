@@ -6,9 +6,10 @@
 <title>Scale</title>
 <style>
   .container {
-    width: 800px;
+    width: 1024px;
     height: 400px;
     margin: 0 auto;
+    float:left;
   }
   .pan, .box {
     width: 200px;
@@ -38,26 +39,38 @@
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="pan" id="left-pan" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h2>Left Pan</h2>
+<div align="right" class="container">
+  <div class="box" id="third-box" align="left" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>Ball Pool</h2>
   </div>
-  <div class="pan" id="right-pan" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <h2>Right Pan</h2>
-  </div>
-  <div class="box" id="third-box" ondrop="drop(event)" ondragover="allowDrop(event)">
-    <!-- Balls will be dynamically generated here -->
-  </div>
-  <div class="box" id="fourth-box" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-  <div class="box" id="fifth-box" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-</div>
-<div class="result" id="result"></div>
+  <div class="box" id="fourth-box" align="left" ondrop="drop(event)" ondragover="allowDrop(event)">    <h2>Group 1</h2></div>
 
+  <div class="box" id="fifth-box" align="left" ondrop="drop(event)" ondragover="allowDrop(event)">    <h2>Group 2</h2></div>
+
+  <div class="box" id="sixth-box" align="left" ondrop="checkDifferentBall(event)" ondragover="allowDrop(event)"><h2>Your Result</h2></div>
+<div>
 <form id="ballForm">
   <label for="numBalls">Number of Balls:</label>
   <input type="number" id="numBalls" name="numBalls" value="8" min="1" max="24">
   <button type="submit">Start</button>
 </form>
+<button onclick="reset()">Reset</button>
+<button onclick="showAnswer()">Show Answer</button></div>
+<p></p>
+<p></p>
+  <div class="pan" id="left-pan" align="left" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>Left Pan</h2>
+  </div>
+  <div class="pan" id="right-pan" align="left" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>Right Pan</h2>
+  </div>
+<form id="weighForm">  <button type="button" onclick="initBalance()">Clear</button> <button type="button" onclick="updateBalance()">Weigh</button></form>
+
+
+</div>
+<div class="result" id="result"></div>
+
+
 
 <script>
 window.onload = function() {
@@ -69,9 +82,14 @@ window.onload = function() {
   });
 };
 
+function reset() {
+  location.reload(); 
+}
+
 function generateBalls(numBalls) {
   var thirdBox = document.getElementById("third-box");
-  thirdBox.innerHTML = "";
+  thirdBox.setAttribute("height","800");
+  thirdBox.innerHTML = "<h2>Ball Pool</h2>";
 
   for (var i = 1; i <= numBalls; i++) {
     var ball = document.createElement("div");
@@ -90,9 +108,7 @@ function generateBalls(numBalls) {
   randomBall.setAttribute("data-weight", randomWeight.toString());
 }
 
-function reset() {
-  location.reload(); 
-}
+
 function showAnswer() {
   var balls = document.querySelectorAll(".ball");
   var differentBallIndex;
@@ -126,7 +142,7 @@ function drop(event) {
     target.appendChild(document.getElementById(data));
   }
 
-  updateBalance();
+
 }
 
 function updateBalance() {
@@ -159,8 +175,37 @@ function calculateWeight(pan) {
   });
   return totalWeight;
 }
+
+function initBalance(){
+    var leftPan = document.getElementById("left-pan");
+    var rightPan = document.getElementById("right-pan");
+    var result = document.getElementById("result");
+    leftPan.style.backgroundColor = "white";
+    rightPan.style.backgroundColor = "white";
+    result.innerText = "";
+}
+
+function checkDifferentBall(event) {
+  event.preventDefault();
+  var data = event.dataTransfer.getData("text");
+  var target = event.target;
+
+  if (target.classList.contains("ball")) {
+    target.parentNode.appendChild(document.getElementById(data));
+  } else {
+    target.appendChild(document.getElementById(data));
+  }
+  var ball = document.getElementById(data);
+
+
+  if (ball.getAttribute("data-weight") !== "2") {
+    alert("Congratulations! You found the different ball: " + ball.innerText);
+  } else {
+    alert("Sorry, this is not the different ball. Try again!");
+  }
+
+}
 </script>
-<button onclick="reset()">Reset</button>
-<button onclick="showAnswer()">Show Answer</button>
+
 </body>
 </html>
