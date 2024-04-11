@@ -1,11 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark-mode">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Ecowitt Weather Station</title>
+  <style>
+
+    body {
+      background-color: #ffffff;
+      color: #000000;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.dark-mode {
+      background-color: #333333;
+      color: #ffffff;
+    }
+  </style>
 </head>
-<body>
+<body class="dark-mode">
   <h1>Today's Weather</h1>
   <div id="weather-data"></div>
   
