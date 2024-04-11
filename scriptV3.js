@@ -33,7 +33,7 @@ fetch("https://www.ecowitt.net/index/home", {
         <li>Exercise indoors</li>
         <li>Cook or bake something delicious</li>
         <li>Have a family movie night</li>
-        <li>Play board games or chess1</li>
+        <li>Play board games or chess</li>
       </ul>
     </div>
   `;
