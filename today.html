@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="dark-mode">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Ecowitt Weather Station</title>
+  <title>Welcome to My Ecowitt Weather Station</title>
   <style>
-
     body {
       background-color: #ffffff;
       color: #000000;
@@ -17,28 +16,109 @@
       margin: 0;
     }
 
-    .title-container {
-      text-align: center;
-    }
+
 
     body.dark-mode {
       background-color: #333333;
       color: #ffffff;
     }
+
+    .container {
+      display: flex;
+      overflow-x: hidden; 
+      height: 100vh;
+    }
+
+    .page {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+
+
+
+    h1 h2 {
+      color: #333333;
+      text-align: center;
+      padding-top: 20px;
+    }
+
+    .button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background-color: #008cba;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #005f75;
+    }
+
+
+    .dots {
+      text-align: center;
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background-color: #cccccc;
+      border-radius: 50%;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    .content-container {
+      text-align: center;
+    }
+
+    .dot.active {
+      background-color: #008cba;
+    }
   </style>
 </head>
+<body>
 
-<body class="dark-mode">
+  <div class="container">
 
-<div>
-  <h3>Current Weather</h3>
-  <div class="title-container" id="weather-data"></div>
-  <div>
-  <img src="e.png" alt="device">
+    <div class="page content-container" id="weather-data">
+    </div>
+
+
+    <div class="page" id="suggestions-data">
+
   </div>
-</div>
 
-  <script src="scriptV2.js"></script>
+
+  <div class="dots">
+    <span class="dot" onclick="scrollToPage(0)"></span>
+    <span class="dot" onclick="scrollToPage(1)"></span>
+  </div>
+  <script src="scriptV3.js"></script>
+  <script>
+    function scrollToPage(pageIndex) {
+      const pages = document.querySelectorAll('.page');
+      const dot = document.querySelectorAll('.dot');
+      pages[pageIndex].scrollIntoView({ behavior: 'smooth' });
+      dot.forEach((dot, index) => {
+        if (index === pageIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+  </script>
+
   <script>
     setInterval(function() {
       location.reload();
