@@ -19,7 +19,9 @@ fetch("https://www.ecowitt.net/index/home", {
   const windSpeedKmh = (windSpeedMph * 1.60934).toFixed(1); 
   const rainRate = (data.data.rain.data.rainratein.value * 25.4).toFixed(1);
   const uvIndex = data.data.so_uv.data.uv.value;
-  
+  if (rainRate > 0) {
+        document.body.style.backgroundImage = 'url("rainy_background.png")';
+  }
   // Update the weather data element
   weatherDataElement.innerHTML = `
     <p>Outdoor Temperature: ${outdoorTempCelsius}&deg;C</p>
