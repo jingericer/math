@@ -10,6 +10,19 @@
       background-color: #ffffff;
       color: #000000;
       transition: background-color 0.3s ease, color 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h2{
+      margin: 0;
+    }
+
+    .title-container {
+      text-align: center;
     }
 
     body.dark-mode {
@@ -18,15 +31,17 @@
     }
   </style>
 </head>
+
 <body class="dark-mode">
-  <h1>Today's Weather</h1>
-  <div id="weather-data"></div>
-  <img src="e.png" alt="Description of the image">
-  <script src="script.js"></script>
+
+
+  <div class="title-container" id="weather-data"></div>
+  <img src="e.png" alt="device">
+  <script src="scriptV1.js"></script>
   <script>
     setInterval(function() {
       location.reload();
-    }, 5000);
+    }, 10000);
   </script>
 </body>
 </html>
