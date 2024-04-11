@@ -17,10 +17,6 @@
       margin: 0;
     }
 
-    h2{
-      margin: 0;
-    }
-
     .title-container {
       text-align: center;
     }
@@ -34,10 +30,15 @@
 
 <body class="dark-mode">
 
-
+<div>
+  <h3>Current Weather</h3>
   <div class="title-container" id="weather-data"></div>
+  <div>
   <img src="e.png" alt="device">
-  <script src="scriptV1.js"></script>
+  </div>
+</div>
+
+  <script src="scriptV2.js"></script>
   <script>
     setInterval(function() {
       location.reload();
