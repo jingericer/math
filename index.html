@@ -201,7 +201,7 @@ function refreshPage() {
                 if (!visited.has(`${row}-${col}`)) {
                     let index = row * cols + col;
                     let cell = cells[index];
-                    cell.style.backgroundColor = '#fff'; // 模拟打开的样式
+                    cell.style.backgroundColor = '#fff';
                     visited.add(`${row}-${col}`);
                     let count = countSurroundingMines(row, col);
                     if (count === 0) {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', startGame);
         <li><strong>Revealing Cells:</strong> Click on a square to reveal what's underneath.</li>
         <li><strong>Avoid Mines:</strong> Be careful! Some squares have mines hidden underneath them. If you click on a mine, you lose!</li>
         <li><strong>Numbers Show Clues:</strong> If a square doesn't have a mine, it will show a number indicating how many mines are nearby. For example, if you see the number "3" on a square, it means that there are 3 mines surrounding that square.</li>
-<img src="example.png" alt="Minesweeper Image" width="100">
+<img src="exampleV1.png" alt="Minesweeper Image" width="100">
         <li><strong>Use Flags:</strong> If you think a square has a mine, you can put a flag on it to mark it.</li>
         <li><strong>Winning the Game:</strong> Try to uncover all the squares without clicking on any mines to win the game!</li>
     </ol>
