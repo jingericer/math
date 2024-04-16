@@ -90,14 +90,18 @@
   <div class="container">
     <div class="page content-container" id="weather-data"></div>
     <div class="page" id="suggestions-data"></div>
-    <div class="page"><h1>Weather Station</h1><div><img src="MyWeatherStation.jpg" alt="weather station" width="400" height="350"></div></div>
+    <div class="page"><h1>Weather Station</h1>
+    <div id="weather-station">
+    
+    </div>
+    </div>
   </div>
   <div class="dots">
     <span class="dot" onclick="scrollToPage(0)"></span>
     <span class="dot" onclick="scrollToPage(1)"></span>
     <span class="dot" onclick="scrollToPage(2)"></span>
   </div>
-  <script src="scriptV5.js"></script>
+  <script src="scriptV6.js"></script>
   <script>
     function scrollToPage(pageIndex) {
       const pages = document.querySelectorAll('.page');
