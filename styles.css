@@ -1,0 +1,32 @@
+#maze {
+    width: 800px;
+    height: 800px;
+    border: 2px solid black;
+    position: relative;
+}
+
+.player {
+    width: 35px;
+    height: 35px;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+.enemy {
+    width: 30px;
+    height: 37px;
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
+
+.friend {
+    width: 30px;
+    height: 37px;
+    background-repeat: no-repeat;
+    position: absolute;
+}
+
