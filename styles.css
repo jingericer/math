@@ -1,8 +1,17 @@
+.container {
+    display: flex;
+}
+
 #maze {
     width: 800px;
     height: 800px;
     border: 2px solid black;
     position: relative;
+}
+
+#gameExplanation {
+    width: 25%; /* Adjust the width as needed */
+    margin-left: 1%; /* Adjust the spacing between the maze and the explanation */
 }
 
 .player {
