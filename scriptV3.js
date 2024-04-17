@@ -257,6 +257,11 @@ function gameLoop() {
     // Create enemies and friends
     enemies.push(createEnemy('harvard.png'));
     enemies.push(createEnemy('harvard.png'));
+    enemies.push(createEnemy('harvard.png'));
+    enemies.push(createEnemy('harvard.png'));
+    enemies.push(createEnemy('mit.png'));
+    enemies.push(createEnemy('mit.png'));
+    enemies.push(createEnemy('mit.png'));
     enemies.push(createEnemy('mit.png'));
     enemies.push(createEnemy('mit.png'));
     enemies.push(createEnemy('mit.png'));
