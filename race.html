@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const roadWidth = parseFloat(window.getComputedStyle(road).width);
         const randomPosition = Math.floor(Math.random() * (roadWidth - 50));
         obstacle.style.left = randomPosition + 'px';
-        obstacle.innerHTML = '<img src="enemycar.png" alt="Enemy">';
+        obstacle.innerHTML = '<img src="carenemy.png" alt="Enemy">';
         road.appendChild(obstacle);
         obstacles.push(obstacle);
     }
