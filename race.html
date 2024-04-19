@@ -10,30 +10,17 @@
         padding: 0;
         overflow: hidden;
     }
-    .tree {
-        width: 70px;
-        height: 50px;
-        background-color: green;
-        position: absolute;
-        top: 0;
-        animation: treeSwing 3s ease-in-out infinite alternate; /* 树木摇摆动画 */
-    }
-    @keyframes treeSwing {
-        0% { transform: rotateZ(-5deg); }
-        100% { transform: rotateZ(5deg); }
-    }
-    .left-tree {
-        left: 10px;
-    }
-    .right-tree {
-        right: 10px;
-    }
     #road {
         width: 600px;
         height: 100vh;
         background-color: #000;
         position: relative;
         margin: 0 auto;
+
+    }
+    @keyframes roadSwing {
+        0% { transform: rotateZ(-1deg); }
+        100% { transform: rotateZ(1deg); }
     }
     #car {
         width: 35px;
@@ -62,6 +49,12 @@
         left: 50%;
         top: 0;
         transform: translateX(-50%);
+        animation: lineSwing 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes lineSwing {
+        0% { transform: rotateZ(-1deg); }
+        100% { transform: rotateZ(1deg); }
     }
     #diamondCounter {
         position: absolute;
@@ -74,8 +67,6 @@
 </head>
 <body>
 <div id="road">
-    <div class="tree left-tree"></div>
-    <div class="tree right-tree"></div>
     <img id="car" src="player.png" alt="Player">
     <div class="traffic-line"></div>
     <div id="diamondCounter">Diamonds: 0</div>
@@ -118,30 +109,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const roadWidth = parseFloat(window.getComputedStyle(road).width);
         const randomPosition = Math.floor(Math.random() * (roadWidth - 50));
         obstacle.style.left = randomPosition + 'px';
-        obstacle.innerHTML = '<img src="enemy.png" alt="Enemy">';
+        obstacle.innerHTML = '<img src="enemycar.png" alt="Enemy">';
         road.appendChild(obstacle);
         obstacles.push(obstacle);
     }
 
-    function createTrees() {
-        const roadHeight = parseFloat(window.getComputedStyle(document.getElementById('road')).height);
-        const treeSpacing = roadHeight / 10;
-        for (let i = 1; i <= 9; i++) {
-            const leftTreeLeft = -90 + Math.random() * 20; // Randomize the left tree's left position slightly
-            const rightTreeLeft = 610 + Math.random() * 20; // Randomize the right tree's left position slightly
-            const leftTree = document.createElement('div');
-            const rightTree = document.createElement('div');
-            leftTree.classList.add('tree', 'left-tree');
-            rightTree.classList.add('tree', 'right-tree');
-            leftTree.style.top = (i * treeSpacing) + 'px';
-            rightTree.style.top = (i * treeSpacing) + 'px';
-            leftTree.style.left = leftTreeLeft + 'px';
-            rightTree.style.left = rightTreeLeft + 'px';
-            document.getElementById('road').appendChild(leftTree);
-            document.getElementById('road').appendChild(rightTree);
-            trees.push(leftTree, rightTree);
-        }
-    }
+
 
     function createDiamond() {
         const diamond = document.createElement('div');
@@ -220,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!gameover) {
             obstacleInterval = setInterval(createObstacle, 1000);
             diamondInterval = setInterval(createDiamond, 3000);
-            createTrees()
+            //createTrees()
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'a' || e.key === 'ArrowLeft') {
                     moveCar('left');
