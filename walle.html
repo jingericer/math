@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shooting Game</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Player
+    let player = {
+      x: canvas.width / 2,
+      y: canvas.height - 50,
+      width: 50,
+      height: 50,
+      speed: 2,
+      alive: true // 玩家是否存活
+    };
+
+    const playerImg = new Image();
+    playerImg.src = 'wall-e.png';
+
+
+
+
+
+    // Enemies
+    let enemies = [];
+    const enemySpeed = 2;
+    const enemySize = 30;
+    const enemySpawnRate = 100; // 生成敌人的频率，每100帧生成一个敌人
+    const enemyBulletSpeed = 5;
+
+    const enemyImg = new Image();
+    enemyImg.src = 'enemy.png';
+
+    // Load player and enemy images
+    playerImg.onload = function() {
+      enemyImg.onload = function() {
+        gameLoop();
+      };
+    };
+
+
+    function spawnEnemy() {
+      let enemy = {
+        x: Math.random() * (canvas.width - enemySize),
+        y: -enemySize,
+        width: enemySize,
+        height: enemySize,
+        speed: enemySpeed,
+        shootTimer: Math.floor(Math.random() * 100) + 50 // 每个敌人的射击计时器
+      };
+      enemies.push(enemy);
+    }
+
+    // Controls
+    const keys = {};
+    document.addEventListener("keydown", function(event) {
+      keys[event.key] = true;
+    });
+
+    document.addEventListener("keyup", function(event) {
+      keys[event.key] = false;
+    });
+
+    function handleInput() {
+      if (keys["ArrowLeft"] && player.x > 0) {
+        player.x -= player.speed;
+      }
+      if (keys["ArrowRight"] && player.x < canvas.width - player.width) {
+        player.x += player.speed;
+      }
+      if (keys[" "] || keys["Space"]) {
+        shoot();
+      }
+    }
+
+    // Bullets
+    let bullets = [];
+    const bulletSpeed = 8;
+    const bulletSize = 5;
+
+    function shoot() {
+      let bullet = {
+        x: player.x + player.width / 2 - bulletSize / 2,
+        y: player.y,
+        width: bulletSize,
+        height: bulletSize,
+        speed: bulletSpeed
+      };
+      bullets.push(bullet);
+    }
+
+    function updateBullets() {
+      for (let i = 0; i < bullets.length; i++) {
+        bullets[i].y -= bullets[i].speed;
+        if (bullets[i].y < 0) {
+          bullets.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    function drawBullets() {
+      ctx.fillStyle = "yellow";
+      for (let bullet of bullets) {
+        ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+      }
+    }
+
+    // Enemy Bullets
+    let enemyBullets = [];
+    const enemyBulletSize = 5;
+
+    function updateEnemyBullets() {
+      for (let i = 0; i < enemyBullets.length; i++) {
+        enemyBullets[i].y += enemyBulletSpeed;
+        if (enemyBullets[i].y > canvas.height) {
+          enemyBullets.splice(i, 1);
+          i--;
+        }
+      }
+    }
+
+    function drawEnemyBullets() {
+      ctx.fillStyle = "blue";
+      for (let bullet of enemyBullets) {
+        ctx.beginPath();
+        ctx.arc(bullet.x, bullet.y, enemyBulletSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Cover
+    const coverX = canvas.width / 4;
+    const coverY = canvas.height - 100;
+    const coverWidth = canvas.width / 2;
+    const coverHeight = 50;
+
+    function drawCover() {
+      ctx.fillStyle = "green";
+      ctx.fillRect(coverX, coverY, coverWidth, coverHeight);
+    }
+
+    function drawPlayer() {
+      if (player.alive) {
+        ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+      }
+    }
+    function drawEnemies() {
+      for (let enemy of enemies) {
+        ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
+      }
+    }
+    // Game Loop
+    let score = 0; // 计分器
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      handleInput();
+      updateBullets();
+      drawBullets();
+      updateEnemyBullets();
+      drawEnemyBullets();
+      drawEnemies();
+      drawPlayer();
+      drawCover();
+
+      // 敌人生成和移动
+      if (Math.random() < 1 / enemySpawnRate) {
+        spawnEnemy();
+      }
+
+      for (let enemy of enemies) {
+        enemy.y += enemySpeed;
+        if (enemy.y > canvas.height) {
+          enemies.splice(enemies.indexOf(enemy), 1);
+        } else {
+          
+      
+          // 敌人射击
+          enemy.shootTimer--;
+          if (enemy.shootTimer <= 0) {
+            enemy.shootTimer = Math.floor(Math.random() * 100) + 50; // 重置射击计时器
+            enemyBullets.push({
+              x: enemy.x + enemy.width / 2,
+              y: enemy.y + enemy.height,
+            });
+          }
+        }
+      }
+
+      // 检查玩家是否与敌人发生碰撞
+      for (let enemy of enemies) {
+        if (
+          player.alive &&
+          enemy.x < player.x + player.width &&
+          enemy.x + enemy.width > player.x &&
+          enemy.y < player.y + player.height &&
+          enemy.y + enemy.height > player.y
+        ) {
+          // 玩家与敌人碰撞，玩家死亡
+          player.alive = false;
+          enemies = []; // 清空敌人
+          enemyBullets = []; // 清空敌人子弹
+          break;
+        }
+      }
+
+      // 检查蓝色子弹是否击中玩家
+      for (let bullet of enemyBullets) {
+        if (
+          player.alive &&
+          bullet.x > player.x &&
+          bullet.x < player.x + player.width &&
+          bullet.y > player.y &&
+          bullet.y < player.y + player.height
+        ) {
+          // 蓝色子弹击中了玩家，玩家死亡
+          player.alive = false;
+          enemies = []; // 清空敌人
+          enemyBullets = []; // 清空敌人子弹
+          break;
+        }
+      }
+
+      // 检查蓝色子弹是否击中掩体
+      for (let bullet of enemyBullets) {
+        if (
+          bullet.x > coverX &&
+          bullet.x < coverX + coverWidth &&
+          bullet.y > coverY &&
+          bullet.y < coverY + coverHeight
+        ) {
+          // 蓝色子弹击中了掩体，消失
+          enemyBullets.splice(enemyBullets.indexOf(bullet), 1);
+          break;
+        }
+      }
+
+      // 检查玩家子弹是否击中敌人
+      for (let bullet of bullets) {
+        for (let enemy of enemies) {
+          if (
+            bullet.x > enemy.x &&
+            bullet.x < enemy.x + enemy.width &&
+            bullet.y > enemy.y &&
+            bullet.y < enemy.y + enemy.height
+          ) {
+            // 子弹击中了敌人，敌人消失
+            enemies.splice(enemies.indexOf(enemy), 1);
+            bullets.splice(bullets.indexOf(bullet), 1);
+            score++; // 计分器增加
+            break;
+          }
+        }
+      }
+
+      // 显示分数
+      ctx.fillStyle = "black";
+      ctx.font = "20px Arial";
+      ctx.fillText("Score: " + score, 10, 30);
+
+      // 如果玩家已死亡，显示游戏结束信息
+      if (!player.alive) {
+        ctx.fillStyle = "red";
+        ctx.font = "30px Arial";
+        ctx.fillText("Game Over!", canvas.width / 2 - 100, canvas.height / 2);
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+  </script>
+</body>
+</html>
