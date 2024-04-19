@@ -203,8 +203,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     moveCar('up');
                 } else if (e.key === 's' || e.key === 'ArrowDown') {
                     moveCar('down');
-}
+             }
             });
+
+            moveInterval = setInterval(function () {
+                moveCar('up');
+            }, 100);
             setInterval(moveObstacles, 10);
             setInterval(moveDiamonds, 10);
         }
