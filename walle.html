@@ -30,10 +30,6 @@
     const playerImg = new Image();
     playerImg.src = 'wall-e.png';
 
-
-
-
-
     // Enemies
     let enemies = [];
     const enemySpeed = 2;
@@ -51,19 +47,6 @@
       };
     };
 
-
-    function spawnEnemy() {
-      let enemy = {
-        x: Math.random() * (canvas.width - enemySize),
-        y: -enemySize,
-        width: enemySize,
-        height: enemySize,
-        speed: enemySpeed,
-        shootTimer: Math.floor(Math.random() * 100) + 50 // 每个敌人的射击计时器
-      };
-      enemies.push(enemy);
-    }
-
     // Controls
     const keys = {};
     document.addEventListener("keydown", function(event) {
@@ -75,10 +58,10 @@
     });
 
     function handleInput() {
-      if (keys["ArrowLeft"] && player.x > 0) {
+      if (keys["a"] && player.x > 0) {
         player.x -= player.speed;
       }
-      if (keys["ArrowRight"] && player.x < canvas.width - player.width) {
+      if (keys["d"] && player.x < canvas.width - player.width) {
         player.x += player.speed;
       }
       if (keys[" "] || keys["Space"]) {
@@ -147,10 +130,13 @@
     const coverY = canvas.height - 100;
     const coverWidth = canvas.width / 2;
     const coverHeight = 50;
+    let showCover = false;
 
     function drawCover() {
-      ctx.fillStyle = "green";
-      ctx.fillRect(coverX, coverY, coverWidth, coverHeight);
+      if (showCover) {
+        ctx.fillStyle = "green";
+        ctx.fillRect(coverX, coverY, coverWidth, coverHeight);
+      }
     }
 
     function drawPlayer() {
@@ -158,11 +144,13 @@
         ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
       }
     }
+
     function drawEnemies() {
       for (let enemy of enemies) {
         ctx.drawImage(enemyImg, enemy.x, enemy.y, enemy.width, enemy.height);
       }
     }
+
     // Game Loop
     let score = 0; // 计分器
 
@@ -188,8 +176,6 @@
         if (enemy.y > canvas.height) {
           enemies.splice(enemies.indexOf(enemy), 1);
         } else {
-          
-      
           // 敌人射击
           enemy.shootTimer--;
           if (enemy.shootTimer <= 0) {
@@ -280,7 +266,24 @@
         ctx.fillText("Game Over!", canvas.width / 2 - 100, canvas.height / 2);
       }
 
+      // 如果得分达到20，显示掩体
+      if (score >= 20) {
+        showCover = true;
+      }
+
       requestAnimationFrame(gameLoop);
+    }
+
+    function spawnEnemy() {
+      let enemy = {
+        x: Math.random() * (canvas.width - enemySize),
+        y: -enemySize,
+        width: enemySize,
+        height: enemySize,
+        speed: enemySpeed,
+        shootTimer: Math.floor(Math.random() * 100) + 50 // 每个敌人的射击计时器
+      };
+      enemies.push(enemy);
     }
 
     gameLoop();
