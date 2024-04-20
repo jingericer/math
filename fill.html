@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill cup</title>
+    <style>
+        #container {
+            position: relative;
+            width: 500px;
+            height: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #cup {
+            width: 200px;
+            border: 2px solid #000;
+            position: relative;
+            transition: transform 1s;
+        }
+        #water {
+            width: 100%;
+            background-color: blue;
+            position: absolute;
+            bottom: 0;
+        }
+        body {
+            cursor: url('pipe.png'), auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="cup">
+            <div id="water"></div>
+        </div>
+    </div>
+    <p id="score">Percentage: 0%</p>
+    <script src="cupgame.js"></script>
+</body>
+</html>
