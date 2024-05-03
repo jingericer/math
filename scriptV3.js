@@ -1,281 +1,144 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const maze = document.getElementById('maze');
-    const player = document.createElement('div');
-    player.className = 'player';
-    player.style.backgroundImage = "url('me.png')";
-    maze.appendChild(player);
+const weatherDataElement = document.getElementById("weather-data");
+const suggestionDataElement = document.getElementById("suggestions-data");
+const weatherstationElement = document.getElementById("weather-station");
 
-    const enemies = [];
-    const friends = [];
+  // Fetch the weather data from My Ecowitt Weather Station
+fetch("https://www.ecowitt.net/index/home", {
+  method: "POST",
+  body: new URLSearchParams({
+    device_id: "V3ZqaWZaWFFYMGwyZ2ZtclhwV005QT09",
+    authorize: "BUY4VT",
+  }),
 
-    function createEnemy(image) {
-        const enemy = document.createElement('div');
-        enemy.className = 'enemy ' + image;
-        enemy.style.backgroundImage = `url('${image}')`;
-        maze.appendChild(enemy);
-
-        // Randomly generate initial position for enemy
-        let enemyX, enemyY;
-        do {
-            enemyX = Math.floor(Math.random() * (maze.offsetWidth - 40));
-            enemyY = Math.floor(Math.random() * (maze.offsetHeight - 40));
-        } while (isColliding(enemyX, enemyY));
-
-        enemy.style.left = enemyX + 'px';
-        enemy.style.top = enemyY + 'px';
-
-        return enemy;
-    }
-
-    function createFriend(image) {
-        const friend = document.createElement('div');
-        friend.className = 'friend ' + image;
-        friend.style.backgroundImage = `url('${image}')`;
-        maze.appendChild(friend);
-
-        // Randomly generate initial position for friend
-        let friendX, friendY;
-        do {
-            friendX = Math.floor(Math.random() * (maze.offsetWidth - 40));
-            friendY = Math.floor(Math.random() * (maze.offsetHeight - 40));
-        } while (isColliding(friendX, friendY));
-
-        friend.style.left = friendX + 'px';
-        friend.style.top = friendY + 'px';
-
-        return friend;
-    }
-
-    function isColliding(x, y) {
-        // Check if new position overlaps with other shapes
-        const playerRect = player.getBoundingClientRect();
-        if (playerRect.left < x + 40 && playerRect.right > x &&
-            playerRect.top < y + 40 && playerRect.bottom > y) {
-            return true; // Colliding with player
-        }
-
-        for (const enemy of enemies) {
-            const enemyRect = enemy.getBoundingClientRect();
-            if (enemyRect.left < x + 40 && enemyRect.right > x &&
-                enemyRect.top < y + 40 && enemyRect.bottom > y) {
-                return true; // Colliding with other enemies
-            }
-        }
-
-        for (const friend of friends) {
-            const friendRect = friend.getBoundingClientRect();
-            if (friendRect.left < x + 40 && friendRect.right > x &&
-                friendRect.top < y + 40 && friendRect.bottom > y) {
-                return true; // Colliding with friend
-            }
-        }
-
-        return false; // No collision
-    }
-
-    function moveEnemy(enemy, targetX, targetY) {
-
-       //if yale, princeton
-
-    if (enemy.className == 'enemy yale.png' || enemy.className == 'enemy princeton.png') {
+})
+.then(response => response.json())
+.then(data => {
+  // Access and process weather data
+  const outdoorTempFahrenheit = data.data.temp.data.tempf.value;
+  const outdoorTempCelsius = ((outdoorTempFahrenheit - 32) * (5 / 9)).toFixed(1);
+  const humidity = data.data.temp.data.humidity.value;
+  const windSpeedMph = data.data.wind.data.windspeedmph.value;
+  const windSpeedKmh = (windSpeedMph * 1.60934).toFixed(1); 
+  const rainRate = (data.data.rain.data.rainratein.value * 25.4).toFixed(1);
+  const uvIndex = data.data.so_uv.data.uv.value;
+  const pressure = (data.data.pressure.data.baromrelin.value * 33.86).toFixed(1);
 
 
-        const dx = targetX - enemy.offsetLeft;
-        const dy = targetY - enemy.offsetTop;
-        const distance = Math.sqrt(dx*dx + dy*dy);
-        const vx = dx / distance;
-        const vy = dy / distance;
+  // Change background picture based on weather data
+  // rainy day
+  if ( pressure < 990) {
+        document.body.style.backgroundImage = 'url("rainy_background_v1.png")';
 
-    const step = 1;
+weatherstationElement.innerHTML = `
+<img src="MyWeatherStation_rain.jpg" alt="weather station" width="400" height="350">
+  `;
+
+ suggestionDataElement.innerHTML = `
+      <h1>Weather Suggestions</h1>
+    <div>
+      <ul>
+        <li>Read or learn something new</li>
+        <li>Exercise indoors</li>
+        <li>Cook or bake something delicious</li>
+        <li>Have a family movie night</li>
+        <li>Play board games or chess</li>
+      </ul>
+    </div>
+  `;
+
+  }
+  // cloudy day
+  if (pressure >= 990 && pressure < 1000) {
+        document.body.style.backgroundImage = 'url("cloudy_background.png")';
+
+weatherstationElement.innerHTML = `
+<img src="MyWeatherStation_cloudyV1.jpg" alt="weather station" width="400" height="350">
+  `;
+
+  suggestionDataElement.innerHTML = `
+      <h2>Weather Suggestions</h2>
+    <div>
+      <ul>
+        <li>Walking or Jogging</li>
+        <li>Gardening</li>
+        <li>Read a Book</li>
+      </ul>
+    </div>
+  `;
+
+  }
 
 
 
-        // Check if enemy is trying to enter the four corners area, if so, randomly set their position
-        const nextX = enemy.offsetLeft + vx * step;
-        const nextY = enemy.offsetTop + vy* step;
+ // sunny day
+  if (pressure > 1000) {
+        document.body.style.backgroundImage = 'url("sunny_background.png")';
 
 
 
-        if (!(nextX < 40 && nextY < 40) &&
-            !(nextX > maze.offsetWidth - 40 && nextY < 40) &&
-            !(nextX < 40 && nextY > maze.offsetHeight - 40) &&
-            !(nextX > maze.offsetWidth - 40 && nextY > maze.offsetHeight - 40)) {
-            enemy.style.left = nextX + 'px';
-            enemy.style.top = nextY + 'px';
-        } else {
-            // Reset enemy position
-            let newX, newY;
-            do {
-                newX = Math.floor(Math.random() * (maze.offsetWidth - 180));
-                newY = Math.floor(Math.random() * (maze.offsetHeight - 180));
-            } while (isColliding(newX, newY));
-            enemy.style.left = newX + 'px';
-            enemy.style.top = newY + 'px';
-        }
+weatherstationElement.innerHTML = `
+<img src="MyWeatherStation_sunny.jpg" alt="weather station" width="400" height="350">
+  `;
 
-       } else {
-
-
-    const step = 3;
+ suggestionDataElement.innerHTML = `
+      <h1>Weather Suggestions</h1>
+    <div>
+      <ul>
+        <li>Go for a walk or hike</li>
+        <li>Play outdoor sports</li>
+        <li>Cook or bake something delicious</li>
+        <li>Have a picnic in the park</li>
+        <li>Go biking</li>
+		<li>Attend an outdoor event</li>
+      </ul>
+    </div>
+  `;
 
 
-    let newX = enemy.offsetLeft;
-    let newY = enemy.offsetTop;
-    let dx = enemy.dataset.dx ? parseFloat(enemy.dataset.dx) : (Math.random() * 2 - 1); // Initial movement direction
-    let dy = enemy.dataset.dy ? parseFloat(enemy.dataset.dy) : (Math.random() * 2 - 1); // Initial movement direction
+  }
+  
+  
+ // foggy day
+  if (rainRate == 0 && uvIndex <5 && humidity == 100 && outdoorTempCelsius <15 && windSpeedKmh <10) {
+        document.body.style.backgroundImage = 'url("foggy_background.png")';
 
 
-    newX += dx * step;
-    newY += dy * step;
+weatherstationElement.innerHTML = `
+<img src="MyWeatherStation_cloudyV1.jpg" alt="weather station" width="400" height="350">
+  `;
 
 
-    if (newX <= 0 || newX >= maze.offsetWidth - 40) {
-        dx = -dx;
-        newX = enemy.offsetLeft + dx * step;
-    }
-    if (newY <= 0 || newY >= maze.offsetHeight - 40) {
-        dy = -dy;
-        newY = enemy.offsetTop + dy * step;
-
-     }
-
-    enemy.dataset.dx = dx;
-    enemy.dataset.dy = dy;
-    enemy.style.left = newX + 'px';
-    enemy.style.top = newY + 'px';
-     }
-    }
-
-function moveFriend(friend) {
-    // Fixed step
-    const step = 2;
-
-    // Get current position and movement direction of friend
-    let newX = friend.offsetLeft;
-    let newY = friend.offsetTop;
-    let dx = friend.dataset.dx ? parseFloat(friend.dataset.dx) : (Math.random() * 2 - 1); // Initial movement direction
-    let dy = friend.dataset.dy ? parseFloat(friend.dataset.dy) : (Math.random() * 2 - 1); // Initial movement direction
-
-    // Calculate new position of friend
-    newX += dx * step;
-    newY += dy * step;
-
-    // If friend reaches maze boundary, reverse movement direction
-    if (newX <= 0 || newX >= maze.offsetWidth - 40) {
-        dx = -dx;
-        newX = friend.offsetLeft + dx * step;
-    }
-    if (newY <= 0 || newY >= maze.offsetHeight - 40) {
-        dy = -dy;
-        newY = friend.offsetTop + dy * step;
-    }
-
-    // Update movement direction and position of friend
-    friend.dataset.dx = dx;
-    friend.dataset.dy = dy;
-    friend.style.left = newX + 'px';
-    friend.style.top = newY + 'px';
-}
+ suggestionDataElement.innerHTML = `
+      <h1>Weather Suggestions</h1>
+    <div>
+      <ul>
+        <li>Cozy up with a book or movie</li>
+        <li>Board games or puzzles</li>
+        <li>Arts and crafts</li>
+        <li>Visit a museum, art gallery, or indoor attraction</li>
+      </ul>
+    </div>
+  `;
 
 
-
-function checkCollision() {
-    const playerRect = player.getBoundingClientRect();
-    for (const friend of friends) {
-        const friendRect = friend.getBoundingClientRect();
-        if (playerRect.left < friendRect.right && playerRect.right > friendRect.left &&
-            playerRect.top < friendRect.bottom && playerRect.bottom > friendRect.top) {
-            return 'win'; // Collided with friend, win
-        }
-    }
-    for (const enemy of enemies) {
-        const enemyRect = enemy.getBoundingClientRect();
-        if (playerRect.left < enemyRect.right && playerRect.right > enemyRect.left &&
-            playerRect.top < enemyRect.bottom && playerRect.bottom > enemyRect.top) {
-            return 'lose'; // Collided with enemy, lose
-        }
-    }
-    return 'none'; // No collision
-}
-
-function gameLoop() {
-    const targetX = player.offsetLeft + player.offsetWidth / 2;
-    const targetY = player.offsetTop + player.offsetHeight / 2;
-    for (const enemy of enemies) {
-        moveEnemy(enemy, targetX, targetY);
-    }
-    for (const friend of friends) {
-        moveFriend(friend);
-    }
-    const collisionResult = checkCollision();
-    if (collisionResult === 'win') {
-        alert('You Win!');
-        clearInterval(gameInterval);
-    } else if (collisionResult === 'lose') {
-        // Reset player position
-        player.style.left = '0px';
-        player.style.top = '0px';
-    }
-}
+  } 
+  
 
 
-    const gameInterval = setInterval(gameLoop, 1000 / 60);
-
-    const keysPressed = {};
-
-    function handleKeyPress() {
-        const speed = 20;
-        let dx = 0;
-        let dy = 0;
-
-        if (keysPressed['ArrowUp']) {
-            dy -= speed;
-        }
-        if (keysPressed['ArrowDown']) {
-            dy += speed;
-        }
-        if (keysPressed['ArrowLeft']) {
-            dx -= speed;
-        }
-        if (keysPressed['ArrowRight']) {
-            dx += speed;
-        }
-
-        player.style.left = Math.max(0, Math.min(maze.offsetWidth - player.offsetWidth, player.offsetLeft + dx)) + 'px';
-        player.style.top = Math.max(0, Math.min(maze.offsetHeight - player.offsetHeight, player.offsetTop + dy)) + 'px';
-    }
-
-    document.addEventListener('keydown', function(event) {
-        keysPressed[event.key] = true;
-        handleKeyPress();
-    });
-
-    document.addEventListener('keyup', function(event) {
-        delete keysPressed[event.key];
-    });
-
-    // Create enemies and friends
-    enemies.push(createEnemy('harvard.png'));
-    enemies.push(createEnemy('harvard.png'));
-    enemies.push(createEnemy('harvard.png'));
-    enemies.push(createEnemy('harvard.png'));
-    enemies.push(createEnemy('mit.png'));
-    enemies.push(createEnemy('mit.png'));
-    enemies.push(createEnemy('mit.png'));
-    enemies.push(createEnemy('mit.png'));
-    enemies.push(createEnemy('mit.png'));
-    enemies.push(createEnemy('mit.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('yale.png'));
-    enemies.push(createEnemy('princeton.png'));
-    enemies.push(createEnemy('princeton.png'));
-    enemies.push(createEnemy('princeton.png'));
-    enemies.push(createEnemy('princeton.png'));
-    friends.push(createFriend('slps.png'));
+  // Update the weather data element
+  weatherDataElement.innerHTML = `
+    <h2>Current Weather</h2>
+    <div>
+    <p>Outdoor Temperature: ${outdoorTempCelsius}&deg;C</p>
+    <p>Humidity: ${humidity}%</p>
+    <p>Wind Speed: ${windSpeedKmh} km/hr</p>
+    <p>Rain Rate: ${rainRate} mm/hr</p>
+    <p>UV Index: ${uvIndex}</p>
+    <p>Pressure: ${pressure} hpa</p>
+    </div>
+  `;
+})
+.catch(error => {
+  console.error("Error fetching weather data:", error);
+  weatherDataElement.innerHTML = "Error: Unable to fetch weather data.";
 });
