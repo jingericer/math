@@ -211,8 +211,13 @@
         }
 
         function clearDesignArea() {
-            document.getElementById("design-area").innerHTML = "";
-            beadPositions = Array(beadCount).fill(null);
+    		let designArea = document.getElementById("design-area");
+    		Array.from(designArea.children).forEach(child => {
+        		if (!child.id || child.id !== "center-trash-bin") {
+            		child.remove();
+        		}
+    		});
+    		beadPositions = Array(beadCount).fill(null);
         }
         function toggleBackground() {
             let designArea = document.getElementById("design-area");
@@ -224,8 +229,6 @@
                 designArea.classList.add("light");
             }
         }
-
-
         document.querySelectorAll(".bead").forEach(bead => {
             bead.addEventListener("dragstart", function(event) {
                 event.dataTransfer.setData("color", event.target.getAttribute("data-color"));
