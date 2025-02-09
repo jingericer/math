@@ -1,0 +1,195 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewel Design Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .bead-library, .design-area {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 40%;
+        }
+        .bead {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: grab;
+            position: relative;
+        }
+        .bead::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.6);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            border-radius: 3px;
+        }
+        .design-area {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            margin: auto;
+            background: #f9f9f9;
+        }
+        .design-area.light {
+            background: #f9f9f9;
+        }
+        .design-area.dark {
+            background: #333;
+        }
+        .bead-in-design {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+ <div class="bead-library">
+        <button onclick="clearDesignArea()" style="margin-bottom: 10px;">Clean</button>
+        <button onclick="toggleBackground()" style="margin-bottom: 10px;">Toggle Background</button>
+        <h3>Bead Library</h3>
+        
+        <div id="library">
+            <script>
+                const colors = [
+                    "#F7E7CE", "#ECC8AF", "#E0A899", "#D5896F", "#C76D5A",
+                    "#BA5544", "#AD3E34", "#9D2D2B", "#8D1D1E", "#7D0E10",
+                    "#E6D2C2", "#DDBEA8", "#D4A788", "#C98C6B", "#BF7353",
+                    "#B35D3C", "#A9472A", "#9E3323", "#931F1D", "#87151E",
+                    "#5D3A2E", "#6E5340", "#7E6B55", "#8F8470", "#A19F89",
+                    "#B3B6A2", "#C6CCBC", "#D9E2D8", "#ECF8F3", "#F2FFF9"
+                ];
+                let library = document.getElementById("library");
+                colors.forEach(color => {
+                    let bead = document.createElement("div");
+                    bead.className = "bead";
+                    bead.style.backgroundColor = color;
+                    bead.draggable = true;
+                    bead.setAttribute("data-color", color);
+                    bead.onclick = function() { addBead(color); };
+                    bead.ondragstart = function(event) {
+                        event.dataTransfer.setData("color", color);
+                    };
+                    library.appendChild(bead);
+                });
+            </script>
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="number" id="bead-count" value="20" min="1" max="50">
+            <button onclick="updateBeadCount()">Set Bead Count</button>
+        </div>
+        <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
+            <h4>Instructions:</h4>
+            <p><strong>Step 1:</strong> Click the <em>Set Bead Count</em> button to initialize the design.</p>
+            <p><strong>Step 2:</strong> <strong>Single Click</strong> on a bead in the library to add it to the design area.</p>
+            <p><strong>Step 3:</strong> <strong>Double Click</strong> on a bead in the design area to remove it.</p>
+            <p><strong>Step 4:</strong> <strong>Drag and Drop</strong> a bead from the design area to the <em>center of the circle</em> to remove it.</p>
+            <p><strong>Step 5:</strong> Use the <em>Clean</em> button to reset your design or the <em>Toggle Background</em> button to change the background color.</p>
+        </div>
+    </div>
+    <div class="design-area light" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
+        <div id="center-point" style="position: absolute; width: 8px; height: 8px; background: black; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+   </div>
+    <script>
+        let beadCount = 20;
+        let beadPositions = [];
+
+        function updateBeadCount() {
+            beadCount = parseInt(document.getElementById("bead-count").value, 10);
+            beadPositions = Array(beadCount).fill(null);
+        }
+
+        function getEmptyPosition() {
+            return beadPositions.indexOf(null);
+        }
+
+        function addBead(color, index = null) {
+            let designArea = document.getElementById("design-area");
+            let radius = 150;
+            let centerX = designArea.clientWidth / 2;
+            let centerY = designArea.clientHeight / 2;
+            
+            if (index === null) {
+                index = getEmptyPosition();
+                if (index === -1) return; // No empty spot available
+            }
+
+            let angle = (index / beadCount) * 2 * Math.PI;
+            let x = centerX + radius * Math.cos(angle);
+            let y = centerY + radius * Math.sin(angle);
+            
+            let bead = document.createElement("div");
+            bead.className = "bead bead-in-design";
+            bead.style.backgroundColor = color;
+            bead.style.width = "50px";
+            bead.style.height = "50px";
+            bead.style.borderRadius = "50%";
+            bead.style.position = "absolute";
+            bead.style.left = x + "px";
+            bead.style.top = y + "px";
+            bead.draggable = true;
+            bead.dataset.index = index;
+            bead.ondragstart = function(event) {
+                event.dataTransfer.setData("color", color);
+                event.dataTransfer.setData("index", index);
+                event.dataTransfer.setData("remove", "true");
+            };
+            bead.ondblclick = function() {
+                bead.remove();
+                beadPositions[index] = null;
+            };
+            designArea.appendChild(bead);
+            beadPositions[index] = bead;
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            let color = event.dataTransfer.getData("color");
+            let remove = event.dataTransfer.getData("remove");
+            let index = event.dataTransfer.getData("index");
+            
+            if (remove) {
+                let bead = beadPositions[index];
+                if (bead) bead.remove();
+                beadPositions[index] = null;
+                return;
+            }
+            if (!color) return;
+            addBead(color, index ? parseInt(index, 10) : null);
+        }
+
+        function clearDesignArea() {
+            document.getElementById("design-area").innerHTML = "";
+            beadPositions = Array(beadCount).fill(null);
+        }
+        function toggleBackground() {
+            let designArea = document.getElementById("design-area");
+            if (designArea.classList.contains("light")) {
+                designArea.classList.remove("light");
+                designArea.classList.add("dark");
+            } else {
+                designArea.classList.remove("dark");
+                designArea.classList.add("light");
+            }
+        }
+
+
+        document.querySelectorAll(".bead").forEach(bead => {
+            bead.addEventListener("dragstart", function(event) {
+                event.dataTransfer.setData("color", event.target.getAttribute("data-color"));
+            });
+        });
+    </script>
+</body>
+</html>
