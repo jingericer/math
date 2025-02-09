@@ -16,12 +16,20 @@
             width: 40%;
         }
         .bead {
-            width: 50px;
-            height: 50px;
             border-radius: 50%;
             display: inline-block;
             cursor: grab;
             position: relative;
+        }
+        .bead.small {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+        .bead.large {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
         }
         .bead::after {
             content: "";
@@ -55,7 +63,7 @@
     </style>
 </head>
 <body>
- <div class="bead-library">
+    <div class="bead-library" style="background-color: #e0e0e5; padding: 15px; border-radius: 10px;">
         <button onclick="clearDesignArea()" style="margin-bottom: 10px;">Clean</button>
         <button onclick="toggleBackground()" style="margin-bottom: 10px;">Toggle Background</button>
         <h3>Bead Library</h3>
@@ -63,26 +71,37 @@
         <div id="library">
             <script>
                 const colors = [
-                    "#F7E7CE", "#ECC8AF", "#E0A899", "#D5896F", "#C76D5A",
-                    "#BA5544", "#AD3E34", "#9D2D2B", "#8D1D1E", "#7D0E10",
-                    "#E6D2C2", "#DDBEA8", "#D4A788", "#C98C6B", "#BF7353",
-                    "#B35D3C", "#A9472A", "#9E3323", "#931F1D", "#87151E",
-                    "#5D3A2E", "#6E5340", "#7E6B55", "#8F8470", "#A19F89",
-                    "#B3B6A2", "#C6CCBC", "#D9E2D8", "#ECF8F3", "#F2FFF9"
+    "#000000", "#FFFFFF", "#FFD700", "#3D3D3D", "#F2FFF9",
+    "#3D3D3D", "#50C878", "#66CDAA", "#4B0082", "#2B65EC", 
+    "#FF0000", "#FFFF00", "#0000FF", "#008000", "#800080", 
+    "#F7E7CE", "#ECC8AF", "#E0A899", "#D5896F", "#C76D5A",
+    "#BA5544", "#AD3E34", "#9D2D2B", "#8D1D1E", "#7D0E10",
+    "#E6D2C2", "#DDBEA8", "#D4A788", "#C98C6B", "#BF7353",
+    "#B35D3C", "#A9472A", "#9E3323", "#931F1D", "#87151E",
+    "#5D3A2E", "#6E5340", "#7E6B55", "#8F8470", "#A19F89",
+    "#B3B6A2", "#C6CCBC", "#D9E2D8", "#ECF8F3", "#F2FFF9"
                 ];
                 let library = document.getElementById("library");
-                colors.forEach(color => {
-                    let bead = document.createElement("div");
-                    bead.className = "bead";
-                    bead.style.backgroundColor = color;
-                    bead.draggable = true;
-                    bead.setAttribute("data-color", color);
-                    bead.onclick = function() { addBead(color); };
-                    bead.ondragstart = function(event) {
-                        event.dataTransfer.setData("color", color);
-                    };
-                    library.appendChild(bead);
-                });
+        function createBead(color, size) {
+            let bead = document.createElement("div");
+            bead.className = `bead ${size}`;
+            bead.style.backgroundColor = color;
+            bead.draggable = true;
+            bead.setAttribute("data-color", color);
+            bead.setAttribute("data-size", size);
+            bead.onclick = function() { addBead(color, size); };
+            bead.ondragstart = function(event) {
+                event.dataTransfer.setData("color", color);
+                event.dataTransfer.setData("size", size);
+            };
+            library.appendChild(bead);
+        }
+
+        colors.forEach(color => {
+            createBead(color, "small");
+            createBead(color, "large");
+        });
+
             </script>
         </div>
         <div style="margin-top: 10px;">
@@ -91,60 +110,60 @@
         </div>
         <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
             <h4>Instructions:</h4>
-            <p><strong>Step 1:</strong> Click the <em>Set Bead Count</em> button to initialize the design.</p>
+            <p><strong>Step 1:</strong> Click the <strong>Set Bead Count</strong> button to <strong>Start</strong> your design.</p>
             <p><strong>Step 2:</strong> <strong>Single Click</strong> on a bead in the library to add it to the design area.</p>
             <p><strong>Step 3:</strong> <strong>Double Click</strong> on a bead in the design area to remove it.</p>
             <p><strong>Step 4:</strong> <strong>Drag and Drop</strong> a bead from the design area to the <em>center of the circle</em> to remove it.</p>
             <p><strong>Step 5:</strong> Use the <em>Clean</em> button to reset your design or the <em>Toggle Background</em> button to change the background color.</p>
         </div>
     </div>
-    <div class="design-area light" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
+    <div class="design-area dark" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
         <div id="center-point" style="position: absolute; width: 8px; height: 8px; background: black; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
    </div>
     <script>
         let beadCount = 20;
         let beadPositions = [];
-
         function updateBeadCount() {
             beadCount = parseInt(document.getElementById("bead-count").value, 10);
             beadPositions = Array(beadCount).fill(null);
         }
-
         function getEmptyPosition() {
             return beadPositions.indexOf(null);
         }
+        function addBead(color, size, index = null) {
+    let designArea = document.getElementById("design-area");
+    let radius = 150;
+    let centerX = designArea.clientWidth / 2;
+    let centerY = designArea.clientHeight / 2;
+    let beadSize = size === "small" ? 30 : 50;
+    
+    if (index === null) {
+        index = getEmptyPosition();
+        if (index === -1) return; // No empty spot available
+    }
 
-        function addBead(color, index = null) {
-            let designArea = document.getElementById("design-area");
-            let radius = 150;
-            let centerX = designArea.clientWidth / 2;
-            let centerY = designArea.clientHeight / 2;
-            
-            if (index === null) {
-                index = getEmptyPosition();
-                if (index === -1) return; // No empty spot available
-            }
-
-            let angle = (index / beadCount) * 2 * Math.PI;
-            let x = centerX + radius * Math.cos(angle);
-            let y = centerY + radius * Math.sin(angle);
-            
-            let bead = document.createElement("div");
-            bead.className = "bead bead-in-design";
-            bead.style.backgroundColor = color;
-            bead.style.width = "50px";
-            bead.style.height = "50px";
-            bead.style.borderRadius = "50%";
-            bead.style.position = "absolute";
-            bead.style.left = x + "px";
-            bead.style.top = y + "px";
-            bead.draggable = true;
-            bead.dataset.index = index;
-            bead.ondragstart = function(event) {
-                event.dataTransfer.setData("color", color);
-                event.dataTransfer.setData("index", index);
-                event.dataTransfer.setData("remove", "true");
-            };
+    let angle = (index / beadCount) * 2 * Math.PI;
+    let x = centerX + radius * Math.cos(angle);
+    let y = centerY + radius * Math.sin(angle);
+    
+    let bead = document.createElement("div");
+    bead.className = `bead bead-in-design ${size}`;
+    bead.style.backgroundColor = color;
+    bead.style.width = beadSize + "px";
+    bead.style.height = beadSize + "px";
+    bead.style.borderRadius = "50%";
+    bead.style.position = "absolute";
+    bead.style.left = x + "px";
+    bead.style.top = y + "px";
+    bead.draggable = true;
+    bead.dataset.index = index;
+    bead.dataset.size = size;
+    bead.ondragstart = function(event) {
+        event.dataTransfer.setData("color", color);
+        event.dataTransfer.setData("size", size);
+        event.dataTransfer.setData("index", index);
+        event.dataTransfer.setData("remove", "true");
+    };
             bead.ondblclick = function() {
                 bead.remove();
                 beadPositions[index] = null;
