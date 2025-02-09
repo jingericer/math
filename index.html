@@ -31,15 +31,18 @@
             height: 50px;
             border-radius: 50%;
         }
-        .bead::after {
+        .bead::after, .bead::before {
             content: "";
-            width: 10px;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.6);
             position: absolute;
-            top: 10px;
-            left: 10px;
-            border-radius: 3px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+        }
+        .bead::after {
+            width: 6px;
+            height: 6px;
+            top: 8px;
+            left: 8px;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
         }
         .design-area {
             position: relative;
