@@ -19,17 +19,6 @@
       padding: 20px;
       width: 40%;
     }
-    /* Style for the center trash bin */
-    #center-trash-bin {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-      z-index: 10;
-    }
     /* Center thread: a circular border simulating a line passing through every bead's center */
     #center-thread {
       position: absolute;
@@ -90,18 +79,16 @@
       height: 50px;
       border-radius: 0;
     }
-    /* Heart bead styles */
+    /* Heart bead styles using clip-path */
     .bead.heart {
       width: 40px;
       height: 40px;
-      /* Define a heart shape using clip-path */
       clip-path: polygon(50% 0%, 100% 35%, 85% 100%, 50% 80%, 15% 100%, 0% 35%);
     }
-    /* Star bead styles */
+    /* Star bead styles using clip-path */
     .bead.star {
       width: 40px;
       height: 40px;
-      /* Define a star shape using clip-path */
       clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
     }
     /* Design area styles */
@@ -140,7 +127,7 @@
         const colors = [
           "#000000", "#FFFFFF", "#FFD700", "#3D3D3D", "#F2FFF9",
           "#50C878", "#66CDAA", "#4B0082", "#2B65EC", "#FF0000",
-          "#FFFF00", "#0000FF", "#008000", "#800080",
+          "#FFFF00", "#0000FF", "#008000", "#800080","#EDC9AF","#C19A6B","#D2B48C","#F4A460",
           "#F7E7CE", "#ECC8AF", "#E0A899", "#D5896F", "#C76D5A",
           "#BA5544", "#AD3E34", "#9D2D2B", "#8D1D1E", "#7D0E10",
           "#E6D2C2", "#DDBEA8", "#D4A788", "#C98C6B", "#BF7353",
@@ -150,7 +137,7 @@
         ];
         let library = document.getElementById("library");
 
-        // Create a bead (supports shape: "round", "oval", "square", "heart", or "star"; default is "round")
+        // Create a bead (supports shape: "round", "oval", "square", "heart", "star"; default is "round")
         function createBead(color, size, shape = "round") {
           let bead = document.createElement("div");
           bead.className = `bead ${size} ${shape}`;
@@ -193,7 +180,7 @@
       <p><strong>Step 1:</strong> Click the <strong>Set Bead Count & Start</strong> button to <strong>start</strong> your design.</p>
       <p><strong>Step 2:</strong> <strong>Single click</strong> on a bead in the library to add it to the design area.</p>
       <p><strong>Step 3:</strong> <strong>Double click</strong> on a bead in the design area to remove it.</p>
-      <p><strong>Step 4:</strong> Drag a bead toward the center (trash bin) to delete it.</p>
+      <p><strong>Step 4:</strong> Drag a bead toward the center to delete it.</p>
     </div>
   </div>
 
@@ -201,16 +188,6 @@
   <div class="design-area dark" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
     <!-- Add center thread: a circular border simulating a line passing through each bead's center -->
     <div id="center-thread"></div>
-    <div id="center-trash-bin">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="6" y="8" width="12" height="10" stroke="black" stroke-width="2" fill="white" />
-        <path d="M9 8V5H15V8" stroke="black" stroke-width="2" />
-        <line x1="9" y1="11" x2="9" y2="16" stroke="black" stroke-width="2" />
-        <line x1="12" y1="11" x2="12" y2="16" stroke="black" stroke-width="2" />
-        <line x1="15" y1="11" x2="15" y2="16" stroke="black" stroke-width="2" />
-        <line x1="4" y1="8" x2="20" y2="8" stroke="black" stroke-width="2" />
-      </svg>
-    </div>
   </div>
 
   <script>
@@ -228,7 +205,7 @@
       return beadPositions.indexOf(null);
     }
 
-    // Add a bead to the design area; supports round, oval, square, heart, and star beads
+    // Add a bead to the design area; supports round, oval, square, heart, and star shapes
     function addBead(color, size, shape) {
       let designArea = document.getElementById("design-area");
       let centerX = designArea.clientWidth / 2;
@@ -280,7 +257,7 @@
         bead.style.borderRadius = "0";
         bead.style.transform = "translate(-50%, -50%)";
       } else if (shape === "heart" || shape === "star") {
-        // For heart and star, we use clip-path (see CSS) so no border-radius is needed.
+        // For heart and star, shape is defined by clip-path in CSS
         bead.style.transform = "translate(-50%, -50%)";
       } else { // round
         bead.style.borderRadius = "50%";
@@ -288,25 +265,26 @@
       }
       
       bead.draggable = true;
-      // Save the empty slot index for later deletion
+      // Store the empty slot index for later deletion
       bead.dataset.index = index;
 
-      // On drag end, if the bead is dropped near the trash bin, delete it
+      // On drag end, if the bead is dropped near the center, delete it
       bead.ondragend = function (event) {
-        let trashRect = document.getElementById("center-trash-bin").getBoundingClientRect();
+        // Use center thread as the design center reference
+        let threadRect = document.getElementById("center-thread").getBoundingClientRect();
         let beadRect = bead.getBoundingClientRect();
-        let trashCenter = {
-          x: trashRect.left + trashRect.width / 2,
-          y: trashRect.top + trashRect.height / 2
+        let center = {
+          x: threadRect.left + threadRect.width / 2,
+          y: threadRect.top + threadRect.height / 2
         };
         let beadCenter = {
           x: beadRect.left + beadRect.width / 2,
           y: beadRect.top + beadRect.height / 2
         };
-        let dx = beadCenter.x - trashCenter.x;
-        let dy = beadCenter.y - trashCenter.y;
+        let dx = beadCenter.x - center.x;
+        let dy = beadCenter.y - center.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
-        // If the bead's center is within 30px of the trash bin center, delete the bead
+        // If the bead's center is within 30px of the design center, delete the bead
         if (distance < 30) {
           bead.remove();
           beadPositions[bead.dataset.index] = null;
@@ -333,14 +311,13 @@
       addBead(color, size, shape);
     }
 
-    // Clear the design area (keeping the center trash bin and center thread)
+    // Clear the design area (keeping the center thread)
     function clearDesignArea() {
       let designArea = document.getElementById("design-area");
-      let trashHTML = document.getElementById("center-trash-bin").outerHTML;
       let threadHTML = document.getElementById("center-thread")
         ? document.getElementById("center-thread").outerHTML
         : "";
-      designArea.innerHTML = threadHTML + trashHTML;
+      designArea.innerHTML = threadHTML;
       beadPositions = Array(beadCount).fill(null);
     }
 
