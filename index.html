@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Jewel Design Tool</title>
   <style>
-    /* Set basic page styles */
+    /* Basic page styles */
     body {
       font-family: Arial, sans-serif;
       display: flex;
@@ -30,7 +30,7 @@
       cursor: pointer;
       z-index: 10;
     }
-    /* Center thread: a circular border simulating a line passing through the center of every bead */
+    /* Center thread: a circular border simulating a line passing through every bead's center */
     #center-thread {
       position: absolute;
       top: 50%;
@@ -62,25 +62,49 @@
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
       pointer-events: none;
     }
-    /* Style for small beads */
-    .bead.small {
+    /* Round bead styles */
+    .bead.small.round {
       width: 30px;
       height: 30px;
       border-radius: 50%;
     }
-    /* Style for large beads */
-    .bead.large {
+    .bead.large.round {
       width: 50px;
       height: 50px;
       border-radius: 50%;
     }
-    /* Style for oval beads */
-    .bead.oval {
+    /* Oval bead styles */
+    .bead.small.oval {
       width: 40px;
       height: 25px;
       border-radius: 50% / 100%;
     }
-    /* Style for the design area */
+    /* Square bead styles */
+    .bead.small.square {
+      width: 30px;
+      height: 30px;
+      border-radius: 0;
+    }
+    .bead.large.square {
+      width: 50px;
+      height: 50px;
+      border-radius: 0;
+    }
+    /* Heart bead styles */
+    .bead.heart {
+      width: 40px;
+      height: 40px;
+      /* Define a heart shape using clip-path */
+      clip-path: polygon(50% 0%, 100% 35%, 85% 100%, 50% 80%, 15% 100%, 0% 35%);
+    }
+    /* Star bead styles */
+    .bead.star {
+      width: 40px;
+      height: 40px;
+      /* Define a star shape using clip-path */
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    /* Design area styles */
     .design-area {
       position: relative;
       width: 400px;
@@ -126,7 +150,7 @@
         ];
         let library = document.getElementById("library");
 
-        // Create a bead (supports the shape parameter: "round" or "oval", default is "round")
+        // Create a bead (supports shape: "round", "oval", "square", "heart", or "star"; default is "round")
         function createBead(color, size, shape = "round") {
           let bead = document.createElement("div");
           bead.className = `bead ${size} ${shape}`;
@@ -148,11 +172,14 @@
           library.appendChild(bead);
         }
 
-        // For each color, generate small round beads, large round beads, and small oval beads
+        // For each color, generate small round, large round, small oval, small square, small heart, and small star beads
         colors.forEach((color) => {
           createBead(color, "small", "round");
           createBead(color, "large", "round");
           createBead(color, "small", "oval");
+          createBead(color, "small", "square");
+          createBead(color, "small", "heart");
+          createBead(color, "small", "star");
         });
       </script>
     </div>
@@ -160,14 +187,14 @@
       <input type="number" id="bead-count" value="20" min="1" max="50" />
       <button onclick="updateBeadCount()">Set Bead Count & Start</button>
     </div>
-        <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
-            <p>This is a desktop-only web tool. Please use a larger screen for the best experience.<p>
-            <h4>Instructions:</h4>
-            <p><strong>Step 1:</strong> Click the <strong>Set Bead Count & Start</strong> button to <strong>Start</strong> your design.</p>
-            <p><strong>Step 2:</strong> <strong>Single Click</strong> on a bead in the library to add it to the design area.</p>
-            <p><strong>Step 3:</strong> <strong>Double Click</strong> on a bead in the design area to remove it.</p>
-            <p><strong>Step 4:</strong> Use the <em>Clean</em> button to reset your design or the <em>Toggle Background</em> button to change the background color.</p>
-        </div>
+    <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
+      <p>This is a desktop-only web tool. Please use a larger screen for the best experience.</p>
+      <h4>Instructions:</h4>
+      <p><strong>Step 1:</strong> Click the <strong>Set Bead Count & Start</strong> button to <strong>start</strong> your design.</p>
+      <p><strong>Step 2:</strong> <strong>Single click</strong> on a bead in the library to add it to the design area.</p>
+      <p><strong>Step 3:</strong> <strong>Double click</strong> on a bead in the design area to remove it.</p>
+      <p><strong>Step 4:</strong> Drag a bead toward the center (trash bin) to delete it.</p>
+    </div>
   </div>
 
   <!-- Design Area -->
@@ -175,7 +202,14 @@
     <!-- Add center thread: a circular border simulating a line passing through each bead's center -->
     <div id="center-thread"></div>
     <div id="center-trash-bin">
-
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="6" y="8" width="12" height="10" stroke="black" stroke-width="2" fill="white" />
+        <path d="M9 8V5H15V8" stroke="black" stroke-width="2" />
+        <line x1="9" y1="11" x2="9" y2="16" stroke="black" stroke-width="2" />
+        <line x1="12" y1="11" x2="12" y2="16" stroke="black" stroke-width="2" />
+        <line x1="15" y1="11" x2="15" y2="16" stroke="black" stroke-width="2" />
+        <line x1="4" y1="8" x2="20" y2="8" stroke="black" stroke-width="2" />
+      </svg>
     </div>
   </div>
 
@@ -194,17 +228,22 @@
       return beadPositions.indexOf(null);
     }
 
-    // Add a bead to the design area; supports round and oval shapes
+    // Add a bead to the design area; supports round, oval, square, heart, and star beads
     function addBead(color, size, shape) {
       let designArea = document.getElementById("design-area");
       let centerX = designArea.clientWidth / 2;
       let centerY = designArea.clientHeight / 2;
       let radius = 150;
       let beadWidth, beadHeight;
+      
       if (shape === "oval") {
         beadWidth = 40;
         beadHeight = 25;
+      } else if (shape === "heart" || shape === "star") {
+        beadWidth = 40;
+        beadHeight = 40;
       } else {
+        // For round and square beads
         beadWidth = size === "small" ? 30 : 50;
         beadHeight = beadWidth;
       }
@@ -233,13 +272,21 @@
       bead.style.position = "absolute";
       bead.style.left = x + "px";
       bead.style.top = y + "px";
+      
       if (shape === "oval") {
         bead.style.borderRadius = "50% / 100%";
         bead.style.transform = `translate(-50%, -50%) ${rotation}`;
-      } else {
+      } else if (shape === "square") {
+        bead.style.borderRadius = "0";
+        bead.style.transform = "translate(-50%, -50%)";
+      } else if (shape === "heart" || shape === "star") {
+        // For heart and star, we use clip-path (see CSS) so no border-radius is needed.
+        bead.style.transform = "translate(-50%, -50%)";
+      } else { // round
         bead.style.borderRadius = "50%";
         bead.style.transform = "translate(-50%, -50%)";
       }
+      
       bead.draggable = true;
       // Save the empty slot index for later deletion
       bead.dataset.index = index;
@@ -297,7 +344,7 @@
       beadPositions = Array(beadCount).fill(null);
     }
 
-    // Toggle the background color of the design area
+    // Toggle the design area's background color
     function toggleBackground() {
       let designArea = document.getElementById("design-area");
       designArea.classList.toggle("light");
