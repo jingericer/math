@@ -72,16 +72,22 @@
   </div>
 <div id="price-display" style="position: fixed; top: 20px; right: 20px; background: #fff; padding: 10px; border: 1px solid #ccc; z-index: 20; font-family: monospace;"></div>
 
+<audio id="background-audio" src="intheforest.mp3"></audio>
+<img
+  id="center-gif"
+  src="music-static.png"
+  onclick="toggleMusic()"
+  style="
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 140px;
+    height: auto;
+    z-index: 10;
+    cursor: pointer;
+  "
+/>
 
-<img id="center-gif" src="music.gif" style="
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  width: 140px;
-  height: auto;
-  z-index: 10;
-  pointer-events: none;
-" />
   <div class="design-area dark" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
     <div id="center-thread"></div>
   </div>
@@ -92,7 +98,22 @@
 let totalPrice = 0.0;
 let beadCart = {};
     let beadPositions = [];
+let isPlaying = false;
 
+  function toggleMusic() {
+    const audio = document.getElementById("background-audio");
+    const gif = document.getElementById("center-gif");
+
+    if (!isPlaying) {
+      audio.play();
+      gif.src = "music.gif";
+      isPlaying = true;
+    } else {
+      audio.pause();
+      gif.src = "music-static.png";
+      isPlaying = false;
+    }
+  }
     function updateBeadCount() {
       beadCount = parseInt(document.getElementById("bead-count").value, 10);
       beadPositions = Array(beadCount).fill(null);
