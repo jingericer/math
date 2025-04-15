@@ -72,21 +72,30 @@
   </div>
 <div id="price-display" style="position: fixed; top: 20px; right: 20px; background: #fff; padding: 10px; border: 1px solid #ccc; z-index: 20; font-family: monospace;"></div>
 
+<div id="music-wrapper" onclick="toggleMusic()" style="
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  max-width: 80px;
+  cursor: pointer;
+  z-index: 10;
+  text-align: center;
+">
+  <img id="music-static" src="music-static.png" style="width: 80px; transition: opacity 0.6s;" />
+  <img id="music-gif" src="music.gif" style="width: 80px; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.6s;" />
+  <div style="
+    margin-top: 4px;
+    font-size: 11px;
+    color: #444;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 2px 4px;
+    border-radius: 4px;
+    pointer-events: none;
+  ">Music?<br/>Click me.</div>
+</div>
+
 <audio id="background-audio" src="intheforest.mp3" loop></audio>
-<img
-  id="center-gif"
-  src="music-static.png"
-  onclick="toggleMusic()"
-  style="
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: 140px;
-    height: auto;
-    z-index: 10;
-    cursor: pointer;
-  "
-/>
+
 
   <div class="design-area dark" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
     <div id="center-thread"></div>
@@ -100,20 +109,23 @@ let beadCart = {};
     let beadPositions = [];
 let isPlaying = false;
 
-  function toggleMusic() {
-    const audio = document.getElementById("background-audio");
-    const gif = document.getElementById("center-gif");
+function toggleMusic() {
+  const audio = document.getElementById("background-audio");
+  const staticImg = document.getElementById("music-static");
+  const gifImg = document.getElementById("music-gif");
 
-    if (!isPlaying) {
-      audio.play();
-      gif.src = "music.gif";
-      isPlaying = true;
-    } else {
-      audio.pause();
-      gif.src = "music-static.png";
-      isPlaying = false;
-    }
+  if (!isPlaying) {
+    audio.play();
+    staticImg.style.opacity = 0;
+    gifImg.style.opacity = 1;
+    isPlaying = true;
+  } else {
+    audio.pause();
+    staticImg.style.opacity = 1;
+    gifImg.style.opacity = 0;
+    isPlaying = false;
   }
+}
     function updateBeadCount() {
       beadCount = parseInt(document.getElementById("bead-count").value, 10);
       beadPositions = Array(beadCount).fill(null);
