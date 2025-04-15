@@ -89,7 +89,7 @@
     </div>
   </div>
 <div id="price-display" style="position: fixed; top: 20px; right: 20px; background: #fff; padding: 10px; border: 1px solid #ccc; z-index: 20; font-family: monospace;"></div>
-
+<audio id="drop-sound" src="bead-drop.m4a" preload="auto"></audio>
 <div id="music-wrapper" onclick="toggleMusic()" style="
   position: fixed;
   right: 16px;
@@ -147,6 +147,7 @@ function toggleMusic() {
     function updateBeadCount() {
       beadCount = parseInt(document.getElementById("bead-count").value, 10);
       beadPositions = Array(beadCount).fill(null);
+ clearDesignArea()
     }
 
     function getEmptyPosition() {
@@ -323,13 +324,17 @@ if (imageURL.includes("tocentre")){
         }
       };
 
+const dropSound = document.getElementById("drop-sound");
+dropSound.currentTime = 0;
+dropSound.play();
+
       bead.ondblclick = () => {
         bead.remove();
         beadPositions[index] = null;
 
   let identifier = bead.style.backgroundImage || bead.style.backgroundColor;
   if (identifier.includes('url("')) {
-    identifier = identifier.slice(5, -2); // 提取 URL 部分
+    identifier = identifier.slice(5, -2);
   }
 
 
