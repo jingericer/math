@@ -60,12 +60,13 @@
   <div class="bead-library" style="background-color: #e0e0e5; padding: 15px; border-radius: 10px;">
     <button onclick="clearDesignArea()" style="margin-bottom: 10px;">Clean</button>
     <button onclick="toggleBackground()" style="margin-bottom: 10px;">Toggle Background</button>
-    <h3>Bead Library</h3>
-    <div id="library"></div>
     <div style="margin-top: 10px;">
       <input type="number" id="bead-count" value="22" min="1" max="50" />
       <button onclick="updateBeadCount()">Set Bead Count & Start</button>
     </div>
+    <h3>Bead Library</h3>
+    <div id="library"></div>
+
     <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
       <p>This is a desktop-only web tool. Please use a larger screen for the best experience.</p>
     </div>
@@ -81,7 +82,7 @@
   z-index: 10;
   text-align: center;
 ">
-  <img id="music-static" src="music-static.png" style="width: 80px; transition: opacity 0.6s;" />
+  <img id="music-static" src="music-static-good.png" style="width: 80px; transition: opacity 0.6s;" />
   <img id="music-gif" src="music.gif" style="width: 80px; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.6s;" />
   <div style="
     margin-top: 4px;
