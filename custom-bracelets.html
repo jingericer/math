@@ -133,15 +133,30 @@
     createImageBead("earth.png", "large", "round");
     createImageBead("uranus.png", "large", "round");
     createImageBead("saturn.png", "large", "round");
+    createImageBead("venus.png", "large", "round");
+    createImageBead("mars.png", "large", "round");
+    createImageBead("maple.png", "large", "round");
+    createImageBead("goldwhitebead.png", "large", "round");
+    createImageBead("goldcicle.png", "large", "round");
     function addBead(color, size, shape) {
       addToDesignArea({ backgroundColor: color }, size, shape);
     }
 
-    function addImageBead(imageURL, size, shape) {
-      addToDesignArea({ backgroundImage: `url('${imageURL}')`, backgroundSize: "cover", backgroundPosition: "center" }, size, shape);
-    }
+function addImageBead(imageURL, size, shape) {
+  addToDesignArea(
+    {
+      backgroundImage: `url('${imageURL}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center"
+    },
+    size,
+    shape,
+    imageURL
+  );
+}
 
-    function addToDesignArea(styleObj, size, shape) {
+
+    function addToDesignArea(styleObj, size, shape, imageURL = "") {
       let designArea = document.getElementById("design-area");
       let centerX = designArea.clientWidth / 2;
       let centerY = designArea.clientHeight / 2;
@@ -164,7 +179,18 @@
       bead.style.top = y + "px";
       bead.style.position = "absolute";
       bead.style.borderRadius = shape === "square" ? "0" : "50%";
-      bead.style.transform = "translate(-50%, -50%)";
+      //bead.style.transform = "translate(-50%, -50%)";
+// Compute angle from bead to center
+const dx = centerX - x;
+const dy = centerY - y;
+const rotationAngle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+// Only apply rotation to specific elongated beads
+if (imageURL.includes("goldcicle")) {
+  bead.style.transform = `translate(-50%, -50%) rotate(${rotationAngle}deg)`;
+} else {
+  bead.style.transform = "translate(-50%, -50%)";
+}
 
       bead.dataset.index = index;
       bead.draggable = true;
