@@ -22,7 +22,9 @@
   background-size: 420px 420px;
   background-position: 8px 24px;
 }
-
+#price-toggle-handle:hover {
+  background: #666;
+}
 .design-area.dark {
   background-image: url('woodtray-dark.png');
   background-size: 430px 430px;
@@ -88,7 +90,36 @@
       <p>This is a desktop-only web tool. Please use a larger screen for the best experience.</p>
     </div>
   </div>
-<div id="price-display" style="position: fixed; top: 20px; right: 20px; background: #fff; padding: 10px; border: 1px solid #ccc; z-index: 20; font-family: monospace;"></div>
+<div id="price-panel-wrapper" style="position: fixed; top: 20px; right: 0; height: 60vh; z-index: 20; display: flex; align-items: flex-start; transition: transform 0.3s ease;">
+  <!-- handle -->
+  <div id="price-toggle-handle" onclick="togglePricePanel()" style="
+    width: 10px;
+    height: 4%;
+    background: #888;
+    cursor: pointer;
+    border-radius: 4px 0 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+
+  ">
+    <span id="price-arrow">&lt;</span>
+  </div>
+
+  <!-- price panel -->
+  <div id="price-display" style="
+    background: #fff;
+    padding: 10px;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    max-height: 100%;
+    overflow-y: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  "></div>
+</div>
+
+
 <audio id="drop-sound" src="bead-drop.mp3" preload="auto"></audio>
 <div id="music-wrapper" onclick="toggleMusic()" style="
   position: fixed;
@@ -126,6 +157,22 @@ let totalPrice = 0.0;
 let beadCart = {};
     let beadPositions = [];
 let isPlaying = false;
+ let isPriceVisible = true;
+
+function togglePricePanel() {
+  const wrapper = document.getElementById("price-panel-wrapper");
+  const arrow = document.getElementById("price-arrow");
+  isPriceVisible = !isPriceVisible;
+
+  if (isPriceVisible) {
+    wrapper.style.transform = "translateX(0)";
+    arrow.textContent = "<";
+  } else {
+    wrapper.style.transform = "translateX(85%)";
+    arrow.textContent = ">";
+  }
+}
+
 
 function toggleMusic() {
   const audio = document.getElementById("background-audio");
