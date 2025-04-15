@@ -47,7 +47,7 @@
       background: #f9f9f9;
       overflow: hidden;
     }
-    .design-area.light { background: #f9f9f9; }
+    .design-area.light { background: #fff; }
     .design-area.dark { background: #333; }
     .bead-in-design {
       position: absolute;
@@ -63,7 +63,7 @@
     <h3>Bead Library</h3>
     <div id="library"></div>
     <div style="margin-top: 10px;">
-      <input type="number" id="bead-count" value="25" min="1" max="50" />
+      <input type="number" id="bead-count" value="22" min="1" max="50" />
       <button onclick="updateBeadCount()">Set Bead Count & Start</button>
     </div>
     <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
@@ -135,9 +135,16 @@
     createImageBead("saturn.png", "large", "round");
     createImageBead("venus.png", "large", "round");
     createImageBead("mars.png", "large", "round");
-    createImageBead("maple.png", "large", "round");
-    createImageBead("goldwhitebead.png", "large", "round");
-    createImageBead("goldcicle.png", "large", "round");
+    createImageBead("maple-pendant--tocentre.png", "large", "round");
+    createImageBead("goldwhitebead-tocentre.png", "large", "round");
+    createImageBead("goldcircle-tocentre.png", "large", "round");
+    createImageBead("pink.png", "large", "round");
+    createImageBead("goldenobsidian.png", "large", "round");
+    createImageBead("bodhi.png", "large", "round");
+    createImageBead("silvercircle-tocentre.png", "large", "round");
+    createImageBead("moonstone.png", "large", "round");
+    createImageBead("amethyst.png", "large", "round");
+    createImageBead("heart-pendant-tocentre.png", "large", "round");
     function addBead(color, size, shape) {
       addToDesignArea({ backgroundColor: color }, size, shape);
     }
@@ -168,7 +175,7 @@ function addImageBead(imageURL, size, shape) {
       if (index === -1) return;
       let angle = (index / beadCount) * 2 * Math.PI;
 let effectiveRadius = radius;
-if (imageURL && imageURL.includes("maple")) {
+if (imageURL && imageURL.includes("pendant")) {
   effectiveRadius += 20;
 }
 
@@ -191,7 +198,7 @@ const dy = centerY - y;
 const rotationAngle = Math.atan2(dy, dx) * (180 / Math.PI);
 
 // Only apply rotation to specific elongated beads
-if (imageURL.includes("goldcicle") || imageURL.includes("maple") || imageURL.includes("goldwhitebead")) {
+if (imageURL.includes("tocentre")){
   bead.style.transform = `translate(-50%, -50%) rotate(${rotationAngle}deg)`;
 } else {
   bead.style.transform = "translate(-50%, -50%)";
@@ -239,8 +246,8 @@ if (imageURL.includes("goldcicle") || imageURL.includes("maple") || imageURL.inc
 
     function toggleBackground() {
       let designArea = document.getElementById("design-area");
-      designArea.classList.toggle("light");
       designArea.classList.toggle("dark");
+      designArea.classList.toggle("light");
     }
   </script>
 </body>
