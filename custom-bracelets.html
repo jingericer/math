@@ -70,7 +70,18 @@
       <p>This is a desktop-only web tool. Please use a larger screen for the best experience.</p>
     </div>
   </div>
+<div id="price-display" style="position: fixed; top: 20px; right: 20px; background: #fff; padding: 10px; border: 1px solid #ccc; z-index: 20; font-family: monospace;"></div>
 
+
+<img id="center-gif" src="music.gif" style="
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 140px;
+  height: auto;
+  z-index: 10;
+  pointer-events: none;
+" />
   <div class="design-area dark" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
     <div id="center-thread"></div>
   </div>
@@ -78,7 +89,8 @@
   <script>
     const colors = [];
     let library = document.getElementById("library");
-
+let totalPrice = 0.0;
+let beadCart = {};
     let beadPositions = [];
 
     function updateBeadCount() {
@@ -89,7 +101,9 @@
     function getEmptyPosition() {
       return beadPositions.indexOf(null);
     }
-
+function getFilledBeadCount() {
+  return beadPositions.filter(pos => pos !== null).length;
+}
     function createBead(color, size, shape = "round") {
       let bead = document.createElement("div");
       bead.className = `bead ${size} ${shape}`;
@@ -106,19 +120,39 @@
       };
       library.appendChild(bead);
     }
+function updatePriceDisplay() {
+  let displayHTML = "";
+  for (let key in beadCart) {
+    const { count, price } = beadCart[key];
 
-    function createImageBead(imageURL, size, shape = "round") {
+
+    const name = key.split("/").pop().split(".")[0];
+
+
+    displayHTML += `
+      <div style="display: flex; align-items: center; margin-bottom: 5px;">
+        <img src="${key}" alt="${name}" style="width: 30px; height: 30px; object-fit: cover; margin-right: 10px;" />
+        ${count} × $${price.toFixed(2)} = $${(count * price).toFixed(2)}
+      </div>
+    `;
+  }
+  displayHTML += `<strong>Total: $${totalPrice.toFixed(2)}</strong>`;
+  document.getElementById("price-display").innerHTML = displayHTML;
+}
+
+    function createImageBead(imageURL, size, shape = "round", price = 5.0) {
       let bead = document.createElement("div");
       bead.className = `bead ${size} ${shape}`;
       bead.style.backgroundImage = `url('${imageURL}')`;
       bead.style.backgroundSize = "cover";
       bead.style.backgroundPosition = "center";
       bead.draggable = true;
-      bead.onclick = () => addImageBead(imageURL, size, shape);
+      bead.onclick = () => addImageBead(imageURL, size, shape, price);
       bead.ondragstart = (event) => {
         event.dataTransfer.setData("image", imageURL);
         event.dataTransfer.setData("size", size);
         event.dataTransfer.setData("shape", shape);
+	event.dataTransfer.setData("price", price);
       };
       library.appendChild(bead);
     }
@@ -128,28 +162,48 @@
       createBead(color, "large", "round");
     });
 
-    createImageBead("tigereye.png", "large", "round");
-    createImageBead("neptune.png", "large", "round");
-    createImageBead("earth.png", "large", "round");
-    createImageBead("uranus.png", "large", "round");
-    createImageBead("saturn.png", "large", "round");
-    createImageBead("venus.png", "large", "round");
-    createImageBead("mars.png", "large", "round");
-    createImageBead("maple-pendant--tocentre.png", "large", "round");
-    createImageBead("goldwhitebead-tocentre.png", "large", "round");
-    createImageBead("goldcircle-tocentre.png", "large", "round");
-    createImageBead("pink.png", "large", "round");
-    createImageBead("goldenobsidian.png", "large", "round");
-    createImageBead("bodhi.png", "large", "round");
-    createImageBead("silvercircle-tocentre.png", "large", "round");
-    createImageBead("moonstone.png", "large", "round");
-    createImageBead("amethyst.png", "large", "round");
-    createImageBead("heart-pendant-tocentre.png", "large", "round");
+    createImageBead("tigereye.png", "large", "round", 3.1);
+    createImageBead("neptune.png", "large", "round", 3.2);
+    createImageBead("earth.png", "large", "round", 3.5);
+    createImageBead("uranus.png", "large", "round", 3.5);
+    createImageBead("saturn.png", "large", "round", 3.5);
+    createImageBead("venus.png", "large", "round", 3.5);
+    createImageBead("mars.png", "large", "round", 3.5);
+    createImageBead("maple-pendant--tocentre.png", "large", "round", 8.0);
+    createImageBead("goldwhitebead-tocentre.png", "large", "round", 8.0);
+    createImageBead("goldcircle-tocentre.png", "large", "round", 8.0);
+    createImageBead("pink.png", "large", "round", 3.0);
+    createImageBead("goldenobsidian.png", "large", "round", 10.2);
+    createImageBead("bodhi.png", "large", "round", 5.2);
+    createImageBead("silvercircle-tocentre.png", "large", "round", 5.2);
+    createImageBead("moonstone.png", "large", "round", 5.2);
+    createImageBead("amethyst.png", "large", "round", 5.2);
+    createImageBead("heart-pendant-tocentre.png", "large", "round", 10.2);
     function addBead(color, size, shape) {
+  if (getFilledBeadCount() >= beadCount) {
+    alert("Maximum number of beads reached.");
+    return;
+  }
       addToDesignArea({ backgroundColor: color }, size, shape);
     }
 
-function addImageBead(imageURL, size, shape) {
+function addImageBead(imageURL, size, shape, price = 5.0) {
+  if (getFilledBeadCount() >= beadCount) {
+    alert("Maximum number of beads reached.");
+    return;
+  }
+
+  if (!beadCart[imageURL]) {
+    beadCart[imageURL] = { count: 1, price: price };
+  } else {
+    beadCart[imageURL].count += 1;
+  }
+
+
+  totalPrice += price;
+
+
+  updatePriceDisplay();
   addToDesignArea(
     {
       backgroundImage: `url('${imageURL}')`,
@@ -221,6 +275,23 @@ if (imageURL.includes("tocentre")){
       bead.ondblclick = () => {
         bead.remove();
         beadPositions[index] = null;
+
+  let identifier = bead.style.backgroundImage || bead.style.backgroundColor;
+  if (identifier.includes('url("')) {
+    identifier = identifier.slice(5, -2); // 提取 URL 部分
+  }
+
+
+  if (beadCart[identifier]) {
+    beadCart[identifier].count -= 1;
+    totalPrice -= beadCart[identifier].price;
+
+    if (beadCart[identifier].count <= 0) {
+      delete beadCart[identifier];
+    }
+
+    updatePriceDisplay();
+  }
       };
 
       designArea.appendChild(bead);
@@ -242,6 +313,10 @@ if (imageURL.includes("tocentre")){
       let threadHTML = document.getElementById("center-thread").outerHTML;
       designArea.innerHTML = threadHTML;
       beadPositions = Array(beadCount).fill(null);
+
+  beadCart = {};
+  totalPrice = 0;
+  updatePriceDisplay();
     }
 
     function toggleBackground() {
