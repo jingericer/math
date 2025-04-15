@@ -167,8 +167,13 @@ function addImageBead(imageURL, size, shape) {
       let index = getEmptyPosition();
       if (index === -1) return;
       let angle = (index / beadCount) * 2 * Math.PI;
-      let x = centerX + radius * Math.cos(angle);
-      let y = centerY + radius * Math.sin(angle);
+let effectiveRadius = radius;
+if (imageURL && imageURL.includes("maple")) {
+  effectiveRadius += 20;
+}
+
+let x = centerX + effectiveRadius * Math.cos(angle);
+let y = centerY + effectiveRadius * Math.sin(angle);
 
       let bead = document.createElement("div");
       bead.className = `bead bead-in-design ${size} ${shape}`;
@@ -186,7 +191,7 @@ const dy = centerY - y;
 const rotationAngle = Math.atan2(dy, dx) * (180 / Math.PI);
 
 // Only apply rotation to specific elongated beads
-if (imageURL.includes("goldcicle")) {
+if (imageURL.includes("goldcicle") || imageURL.includes("maple") || imageURL.includes("goldwhitebead")) {
   bead.style.transform = `translate(-50%, -50%) rotate(${rotationAngle}deg)`;
 } else {
   bead.style.transform = "translate(-50%, -50%)";
