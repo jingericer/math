@@ -16,7 +16,7 @@
     .design-area {
       border: 1px solid #ccc;
       padding: 20px;
-      width: 40%;
+      width: 360px;
     }
 .design-area.light {
   background-image: url('crystaltray-light.PNG');
@@ -51,7 +51,12 @@
       cursor: grab;
       position: relative;
     }
-
+#main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+}
     .bead.small.round { width: 30px; height: 30px; border-radius: 50%; }
     .bead.large.round { width: 50px; height: 50px; border-radius: 50%; }
 
@@ -64,7 +69,7 @@
   background-size: 450px 450px;
   background-position: 8px 24px;
   border-radius: 10px;
-  margin-left: 20px;
+
   overflow: hidden;
 }
 
@@ -77,6 +82,14 @@
   </style>
 </head>
 <body>
+<div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 100;">
+  <button onclick="zoomOut()">−</button>
+  <button onclick="zoomIn()">+</button>
+</div>
+
+<div id="main-container">
+<div id="zoom-wrapper" style="display: flex; gap: 20px; transform: scale(1); transform-origin: top center;">
+
   <div class="bead-library" style="background-color: #e0e0e5; padding: 15px; border-radius: 10px;">
     <button onclick="clearDesignArea()" style="margin-bottom: 10px;">Clean</button>
     <button onclick="toggleBackground()" style="margin-bottom: 10px;">Toggle Background</button>
@@ -92,7 +105,14 @@
     </div>
 
 
+    </div>
+  <div class="design-area light" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
   </div>
+
+  </div>
+
+
+
 <div id="price-panel-wrapper" style="position: fixed; top: 20px; right: 0; height: 60vh; z-index: 20; display: flex; align-items: flex-start; transition: transform 0.3s ease;">
   <!-- handle -->
   <div id="price-toggle-handle" onclick="togglePricePanel()" style="
@@ -149,9 +169,7 @@
 <audio id="background-audio" src="intheforest.mp3" loop></audio>
 
 
-  <div class="design-area light" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
-    <!--<div id="center-thread"></div>-->
-  </div>
+
 
   <script>
     const colors = [];
@@ -161,7 +179,18 @@ let beadCart = {};
     let beadPositions = [];
 let isPlaying = false;
  let isPriceVisible = true;
+let zoomLevel = 1;
+  const wrapper = document.getElementById("zoom-wrapper");
 
+  function zoomIn() {
+    zoomLevel += 0.1;
+    wrapper.style.transform = `scale(${zoomLevel})`;
+  }
+
+  function zoomOut() {
+    zoomLevel = Math.max(0.5, zoomLevel - 0.1);
+    wrapper.style.transform = `scale(${zoomLevel})`;
+  }
 function togglePricePanel() {
   const wrapper = document.getElementById("price-panel-wrapper");
   const arrow = document.getElementById("price-arrow");
