@@ -108,7 +108,32 @@
     </div>
   <div class="design-area light" id="design-area" ondragover="event.preventDefault()" ondrop="drop(event)">
   </div>
-
+<div id="music-wrapper" onclick="toggleMusic()" style="
+  position: fixed;
+  right: 16px;
+  top: 350px;
+  width: 80px;
+  height: 100px;
+  cursor: pointer;
+  z-index: 10;
+  text-align: center;
+  position: relative;
+">
+  <img id="music-static" src="music-static-good.png" style="width: 80px; transition: opacity 0.6s;" />
+  <img id="music-gif" src="music.gif" style="width: 80px; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.6s;" />
+  <div style="
+    position: absolute;
+    top: 82px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: #444;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 2px 4px;
+    border-radius: 4px;
+    pointer-events: none;
+  ">Music?<br/></div>
+</div>
   </div>
 
 
@@ -144,27 +169,6 @@
 
 
 <audio id="drop-sound" src="bead-drop.mp3" preload="auto"></audio>
-<div id="music-wrapper" onclick="toggleMusic()" style="
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  max-width: 80px;
-  cursor: pointer;
-  z-index: 10;
-  text-align: center;
-">
-  <img id="music-static" src="music-static-good.png" style="width: 80px; transition: opacity 0.6s;" />
-  <img id="music-gif" src="music.gif" style="width: 80px; position: absolute; top: 0; left: 0; opacity: 0; transition: opacity 0.6s;" />
-  <div style="
-    margin-top: 4px;
-    font-size: 11px;
-    color: #444;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 2px 4px;
-    border-radius: 4px;
-    pointer-events: none;
-  ">Music?<br/>Click me.</div>
-</div>
 
 <audio id="background-audio" src="intheforest.mp3" loop></audio>
 
@@ -212,6 +216,7 @@ function toggleMusic() {
   const gifImg = document.getElementById("music-gif");
 
   if (!isPlaying) {
+    audio.volume = 0.1;
     audio.play();
     staticImg.style.opacity = 0;
     gifImg.style.opacity = 1;
