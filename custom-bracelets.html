@@ -60,8 +60,53 @@
     .bead.small.round { width: 30px; height: 30px; border-radius: 50%; }
     .bead.large.round { width: 50px; height: 50px; border-radius: 50%; }
 
+    .circle-frame {
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255,255,255,0.2);
+      position: relative;
+    }
+    .slideshow-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+      overflow: hidden;
+      flex-direction: column;
+    }
 
 
+
+    .slide {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide.show {
+      opacity: 1;
+    }
+
+    .loading-text {
+      color: white;
+      font-family: sans-serif;
+      font-size: 18px;
+      margin-top: 20px;
+      opacity: 0.8;
+      text-align: center;
+    }
 .design-area {
   position: relative;
   width: 400px;
@@ -83,12 +128,27 @@
   </style>
 </head>
 <body>
+<div class="slideshow-container" id="slideshow">
+    <div class="circle-frame">
+    <img class="slide" src="01.png" />
+    <img class="slide" src="02.png" />
+    <img class="slide" src="03.png" />
+    <img class="slide" src="04.png" />
+    <img class="slide" src="05.png" />
+    <img class="slide" src="06.png" />
+    <img class="slide" src="07.png" />
+    <img class="slide" src="08.png" />
+    <img class="slide" src="09.png" />
+    </div>
+
+    <div class="loading-text">Your bead is being crafted... ⏳</div>
+  </div>
+
+ <div id="main-ui" style="display: none;">
 <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 100;">
   <button onclick="zoomOut()">−</button>
   <button onclick="zoomIn()">+</button>
 </div>
-
-<div id="main-container">
 <div id="zoom-wrapper" style="display: flex; gap: 20px; transform: scale(1); transform-origin: top center;">
 
   <div class="bead-library" style="background-color: #e0e0e5; padding: 15px; border-radius: 10px;">
@@ -176,7 +236,28 @@
 
 <audio id="background-audio" src="intheforest.mp3" loop></audio>
 
+</div>
 
+  <script>
+
+    const slides = document.querySelectorAll('.slide');
+    let current = 0;
+    function showSlide(index) {
+      slides.forEach((s, i) => s.classList.toggle('show', i === index));
+    }
+    showSlide(current);
+    const interval = setInterval(() => {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }, 2000);
+
+
+    setTimeout(() => {
+      document.getElementById('slideshow').style.display = 'none';
+      document.getElementById('main-ui').style.display = 'block';
+      clearInterval(interval);
+    }, 18000);
+  </script>
 
 
   <script>
