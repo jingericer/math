@@ -162,6 +162,21 @@
     <h3>Bead Library</h3>
     <div id="library"></div>
 
+<div id="toast-message" style="
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s;
+  z-index: 999;
+">Message</div>
+
     <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
       <p>Please use a larger screen for the best experience.</p>
     </div>
@@ -250,14 +265,14 @@
     const interval = setInterval(() => {
       current = (current + 1) % slides.length;
       showSlide(current);
-    }, 2000);
+    }, 1500);
 
 
     setTimeout(() => {
       document.getElementById('slideshow').style.display = 'none';
       document.getElementById('main-ui').style.display = 'block';
       clearInterval(interval);
-    }, 18000);
+    }, 13500);
   </script>
 
 
@@ -295,7 +310,15 @@ function togglePricePanel() {
   }
 }
 
+function showToast(msg) {
+  const toast = document.getElementById("toast-message");
+  toast.textContent = msg;
+  toast.style.opacity = 1;
 
+  setTimeout(() => {
+    toast.style.opacity = 0;
+  }, 2500);
+}
 function toggleMusic() {
   const audio = document.getElementById("background-audio");
   const staticImg = document.getElementById("music-static");
@@ -415,7 +438,7 @@ function updatePriceDisplay() {
 
     function addBead(color, size, shape) {
   if (getFilledBeadCount() >= beadCount) {
-    alert("Maximum number of beads reached.");
+    showToast("You’ve reached the maximum number of beads.");
     return;
   }
       addToDesignArea({ backgroundColor: color }, size, shape);
@@ -423,7 +446,7 @@ function updatePriceDisplay() {
 
 function addImageBead(imageURL, size, shape, price = 5.0) {
   if (getFilledBeadCount() >= beadCount) {
-    alert("Maximum number of beads reached.");
+    showToast("You’ve reached the maximum number of beads.");
     return;
   }
 
