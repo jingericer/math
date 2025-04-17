@@ -359,22 +359,20 @@ document.getElementById("skip-button").addEventListener("click", () => {
 
 <script>
 document.getElementById("screenshot-btn").addEventListener("click", () => {
-  const target = document.getElementById("design-area"); // or "zoom-wrapper" for full layout
+  const target = document.getElementById("zoom-wrapper"); // or "zoom-wrapper" for full layout
 
   html2canvas(target,{useCORS: true,
   allowTaint: false, backgroundColor: null }).then(canvas => {
 
-    // Convert to image
+
     const imgData = canvas.toDataURL("image/png");
 
-    // Create a download link
+
     const link = document.createElement("a");
     link.download = "gemistry-design.png";
     link.href = imgData;
     link.click();
 
-    // Optional: for future social share integrations
-    // navigator.share({ title: "My design", files: [dataURLtoFile(imgData)] })...
   });
 });
 </script>
