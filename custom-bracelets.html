@@ -22,7 +22,7 @@
 
 .bead-library, .design-area {
   background: white;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.06);
   padding: 20px;
 }
@@ -237,14 +237,14 @@ button:hover {
   color: white;
   padding: 10px 18px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s;
   z-index: 999;
 ">Message</div>
 
-    <div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc;">
+<div style="margin-top: 10px; padding: 10px; border-top: 1px solid #ccc; font-size: 12px; color: #555;">
       <p>Please use a larger screen for the best experience.</p>
       <p>Click a bead to add it to the tray. Double-click a bead on the tray to remove it.</p>
     </div>
@@ -364,6 +364,28 @@ let beadPositions = Array(beadCount).fill(null);
 
 let isPlaying = false;
  let isPriceVisible = true;
+
+const musicTracks = [
+  "intheforest.mp3",
+  "hallelujah.mp3"
+];
+
+let currentTrackIndex = 0;
+const player = document.getElementById("background-audio");
+
+function playNextTrack() {
+
+  currentTrackIndex = (currentTrackIndex + 1) % musicTracks.length;
+  player.src = musicTracks[currentTrackIndex];
+  player.volume = 0.2;
+  player.play();
+
+
+  document.getElementById("music-static").style.opacity = 0;
+  document.getElementById("music-gif").style.opacity = 1;
+}
+
+
 let zoomLevel = 1.2;
   const wrapper = document.getElementById("zoom-wrapper");
   wrapper.style.transform = `scale(${zoomLevel})`;
