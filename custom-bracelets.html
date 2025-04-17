@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jewel Design Tool</title>
@@ -306,7 +307,10 @@ button:hover {
 <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 100;">
   <button onclick="zoomOut()">−</button>
   <button onclick="zoomIn()">+</button>
-  <button id="screenshot-btn">📸</button>
+<button id="screenshot-btn" style="font-size: 20px; padding: 10px; border-radius: 8px;">
+  <i class="fa-solid fa-camera"></i>
+</button>
+
 </div>
 <div id="zoom-wrapper" style="display: flex; gap: 20px; transform: scale(1); transform-origin: top center;">
 
