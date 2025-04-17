@@ -12,24 +12,55 @@
       justify-content: center;
       padding: 20px;
     }
+
     .bead-library,
     .design-area {
       border: 1px solid #ccc;
       padding: 20px;
-      width: 360px;
+      width: 400px;
     }
+
+.bead-library, .design-area {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 20px;
+}
+
+@keyframes rotate-bead-hover {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+#library .bead:hover {
+  animation: rotate-bead-hover 1.2s linear infinite;
+}
+
+
+#library {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+  gap: 8px;
+}
+
+
+#price-panel-wrapper {
+  background: white;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+  padding: 16px;
+}
+
 .design-area.light {
   background-image: url('crystaltray-light.PNG');
-  background-size: 420px 420px;
-  background-position: 8px 24px;
+
 }
 #price-toggle-handle:hover {
   background: #666;
 }
 .design-area.dark {
-  background-image: url('woodtray-dark.png');
-  background-size: 430px 430px;
-  background-position: 8px 20px;
+  background-image: url('jadetray-light.PNG');
+
 }
 #tray-bg {
   transition: opacity 0.5s ease;
@@ -82,7 +113,14 @@
       overflow: hidden;
       flex-direction: column;
     }
+@keyframes rotate-bead {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
 
+.bead-rotate {
+  animation: rotate-bead 1.5s linear infinite;
+}
 
 
     .slide {
@@ -108,10 +146,11 @@
       opacity: 0.8;
       text-align: center;
     }
+
 .design-area {
   position: relative;
-  width: 400px;
-  height: 400px;
+  width: 420px;
+  height: 420px;
 
   background-size: 450px 450px;
   background-position: 8px 24px;
@@ -120,7 +159,22 @@
   overflow: hidden;
 }
 
+button {
+  background-color: #f6f6f6;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-family: 'Arial', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
+button:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}
     .bead-in-design {
       position: absolute;
       transform: translate(-50%, -50%);
@@ -130,6 +184,19 @@
 </head>
 <body>
 <div class="slideshow-container" id="slideshow">
+<button id="skip-button" style="
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 1000;
+">Skip ✕</button>
     <div class="circle-frame">
     <img class="slide" src="01.png" />
     <img class="slide" src="02.png" />
@@ -244,6 +311,9 @@
     max-height: 100%;
     overflow-y: auto;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  border-radius: 8px;
+  margin-right: 2px; 
   "></div>
 </div>
 
@@ -273,6 +343,12 @@
       document.getElementById('main-ui').style.display = 'block';
       clearInterval(interval);
     }, 13500);
+
+document.getElementById("skip-button").addEventListener("click", () => {
+  document.getElementById('slideshow').style.display = 'none';
+  document.getElementById('main-ui').style.display = 'block';
+  clearInterval(interval);
+});
   </script>
 
 
@@ -281,11 +357,15 @@
     let library = document.getElementById("library");
 let totalPrice = 0.0;
 let beadCart = {};
-    let beadPositions = [];
+
+let beadCount = 18;
+let beadPositions = Array(beadCount).fill(null);
+
 let isPlaying = false;
  let isPriceVisible = true;
-let zoomLevel = 1;
+let zoomLevel = 1.2;
   const wrapper = document.getElementById("zoom-wrapper");
+  wrapper.style.transform = `scale(${zoomLevel})`;
 
   function zoomIn() {
     zoomLevel += 0.1;
@@ -309,6 +389,8 @@ function togglePricePanel() {
     arrow.textContent = ">";
   }
 }
+
+
 
 function showToast(msg) {
   const toast = document.getElementById("toast-message");
@@ -338,9 +420,9 @@ function toggleMusic() {
   }
 }
     function updateBeadCount() {
-      beadCount = parseInt(document.getElementById("bead-count").value, 10);
+      beadCount = parseInt(document.getElementById("bead-count").value, 10) || 18;
       beadPositions = Array(beadCount).fill(null);
- clearDesignArea()
+      clearDesignArea()
     }
 
     function getEmptyPosition() {
@@ -442,6 +524,7 @@ function updatePriceDisplay() {
     return;
   }
       addToDesignArea({ backgroundColor: color }, size, shape);
+
     }
 
 function addImageBead(imageURL, size, shape, price = 5.0) {
@@ -557,6 +640,13 @@ dropSound.play();
 
       designArea.appendChild(bead);
       beadPositions[index] = bead;
+
+bead.addEventListener("mouseover", () => {
+  bead.classList.add("bead-rotate");
+});
+bead.addEventListener("mouseout", () => {
+  bead.classList.remove("bead-rotate");
+});
     }
 
     function drop(event) {
