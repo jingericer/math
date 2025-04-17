@@ -181,6 +181,7 @@ button:hover {
       cursor: pointer;
     }
   </style>
+<script src="html2canvas.min.js"></script>
 </head>
 <body>
 <div class="slideshow-container" id="slideshow">
@@ -216,6 +217,7 @@ button:hover {
 <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 100;">
   <button onclick="zoomOut()">−</button>
   <button onclick="zoomIn()">+</button>
+  <button id="screenshot-btn">📸</button>
 </div>
 <div id="zoom-wrapper" style="display: flex; gap: 20px; transform: scale(1); transform-origin: top center;">
 
@@ -351,6 +353,33 @@ document.getElementById("skip-button").addEventListener("click", () => {
   clearInterval(interval);
 });
   </script>
+
+
+
+
+<script>
+document.getElementById("screenshot-btn").addEventListener("click", () => {
+  const target = document.getElementById("design-area"); // or "zoom-wrapper" for full layout
+
+  html2canvas(target,{useCORS: true,
+  allowTaint: false, backgroundColor: null }).then(canvas => {
+
+    // Convert to image
+    const imgData = canvas.toDataURL("image/png");
+
+    // Create a download link
+    const link = document.createElement("a");
+    link.download = "gemistry-design.png";
+    link.href = imgData;
+    link.click();
+
+    // Optional: for future social share integrations
+    // navigator.share({ title: "My design", files: [dataURLtoFile(imgData)] })...
+  });
+});
+</script>
+
+
 
 
   <script>
