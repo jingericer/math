@@ -7,6 +7,56 @@
   <title>Jewel Design Tool</title>
   <style>
 
+#lamp-wrapper {
+      position: relative;
+      width: 120px;
+      height: 100px;
+    }
+
+    #lamp-base {
+      position: absolute;
+      bottom: 0;
+      left: 40px;
+      width: 40px;
+      height: 15px;
+      background: #444;
+      border-radius: 8px;
+    }
+
+    #lamp-arm {
+      position: absolute;
+      bottom: 15px;
+      left: 59px;
+      width: 2px;
+      height: 80px;
+      background: #999;
+      transform-origin: bottom center;
+      transform: rotate(0deg);
+    }
+
+    #lamp-head {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: radial-gradient(circle at center, #fff 30%, #aaa 100%);
+      border-radius: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -10px;
+      cursor: pointer;
+    }
+
+    #angle-control {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    input[type="range"] {
+      width: 30px;
+    }
+
+
+
 #mode-toggle-checkbox {
   opacity: 0;
   position: absolute;
@@ -388,19 +438,81 @@ button:hover {
   top: 80px;
   left: 20px;
   z-index: 999;
-  background: rgba(0, 0, 0, 0.7);
+
   padding: 12px;
   border-radius: 10px;
   color: white;
   font-family: sans-serif;
 ">
 
-<div style="display: flex; align-items: center; gap: 10px;">
-  <input id="light-angle" type="range" min="0" max="360" step="1" value="250" style="width: 100px; height: 2px; border-radius: 4px; appearance: none; background: #ccc;">
-</div>
+  <div>
+    <div id="lamp-wrapper">
+      <div id="lamp-base"></div>
+      <div id="lamp-arm">
+        <div id="lamp-head"></div>
+      </div>
+    </div>
+    <div id="angle-control" style="display: none;">
+      <input type="range" id="angle" min="230" max="300" value="250">
+    </div>
+  </div>
+
+
 
 </div>
+  <script>
+    const angleInput = document.getElementById("angle");
+    const lampArm = document.getElementById("lamp-arm");
+    const angleDisplay = document.getElementById("angle-display");
 
+    angleInput.addEventListener("input", (e) => {
+      const angle = parseInt(e.target.value);
+      lampArm.style.transform = `rotate(${angle+90}deg)`;
+      updateLight(angle)
+    });
+
+
+const lampHead = document.getElementById("lamp-head");
+    const arm = document.getElementById("lamp-arm");
+    const container = document.getElementById("lamp-wrapper");
+
+    let dragging = false;
+
+    lampHead.addEventListener("mousedown", (e) => {
+      dragging = true;
+      e.preventDefault();
+    });
+
+    document.addEventListener("mouseup", () => {
+      dragging = false;
+    });
+function mapDragAngleToLightAngle(dragAngle) {
+  const minInput = -30, maxInput = 30;
+  const minOutput = 230, maxOutput = 300;
+
+  return ((dragAngle - minInput) / (maxInput - minInput)) * (maxOutput - minOutput) + minOutput;
+}
+    document.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+
+      const rect = container.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.bottom - 20; // base bottom
+
+      const dx = e.clientX - centerX;
+      const dy = centerY - e.clientY;
+
+      let angle = Math.atan2(dx, dy) * (180 / Math.PI);
+      angle = Math.max(-30, Math.min(30, angle)); // clamp
+const mappedAngle = mapDragAngleToLightAngle(angle);
+ 
+      arm.style.transform = `rotate(${angle}deg)`;
+      updateLight(mappedAngle)
+      // Optional: You can use this angle for light direction control
+
+    });
+
+  </script>
 
 <div id="light-overlay"></div>
 
@@ -485,16 +597,18 @@ modeCheckbox.addEventListener("change", () => {
   document.body.style.backgroundColor = isNight ? "#111" : "#f9f9f9";
   document.getElementById("light-overlay").style.display = isNight ? "block" : "none";
   document.getElementById("light-controls").style.display = isNight ? "block" : "none";
+
+if (isNight) updateLight(parseInt(document.getElementById("angle").value));
 });
 </script>
 
 <script>
 const overlay = document.getElementById("light-overlay");
-const angleInput = document.getElementById("light-angle");
 
-function updateLight() {
 
-  const angle = parseInt(angleInput.value);
+function updateLight(angle) {
+
+
 
 
   const radius = 40;
