@@ -5,7 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jewel Design Tool</title>
   <style>
+
+#mode-toggle-checkbox {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.toggle-container {
+  position: fixed;
+  top: 20px;
+  left: 100px;
+  z-index: 999;
+}
+
+.toggle-switch {
+  display: inline-block;
+  width: 60px;
+  height: 30px;
+  background-color: #333;
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-switch::before {
+  content: '';
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon {
+  position: absolute;
+  left: 10px;
+  top: 5px;
+  color: white;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+#mode-toggle-checkbox:checked + .toggle-switch::before {
+  transform: translateX(30px);
+}
+
+#mode-toggle-checkbox:checked + .toggle-switch {
+  background-color: #000;
+}
+
+#mode-toggle-checkbox:checked + .toggle-switch .toggle-icon {
+
+  left: 35px;
+}
+
+
+#light-overlay {
+display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+
+
+  transition: background 0.2s ease;
+  z-index: 10;
+}
+
     body {
+  background-color: #111;
+
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+
+
       font-family: Arial, sans-serif;
       display: flex;
 
@@ -214,6 +295,14 @@ button:hover {
   </div>
 
  <div id="main-ui" style="display: none;">
+
+<div class="toggle-container">
+  <input type="checkbox" id="mode-toggle-checkbox">
+  <label for="mode-toggle-checkbox" class="toggle-switch">
+
+  </label>
+</div>
+
 <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 100;">
   <button onclick="zoomOut()">−</button>
   <button onclick="zoomIn()">+</button>
@@ -288,6 +377,30 @@ button:hover {
 
 
 
+
+
+<div id="light-controls" style="
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: 999;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 12px;
+  border-radius: 10px;
+  color: white;
+  font-family: sans-serif;
+">
+
+  <label>Angle: <input id="light-angle" type="range" min="0" max="360" step="1" value="250"></label>
+
+
+</div>
+
+
+<div id="light-overlay"></div>
+
+
+
 <div id="price-panel-wrapper" style="position: fixed; top: 20px; right: 0; height: 60vh; z-index: 20; display: flex; align-items: flex-start; transition: transform 0.3s ease;">
   <!-- handle -->
   <div id="price-toggle-handle" onclick="togglePricePanel()" style="
@@ -354,8 +467,51 @@ document.getElementById("skip-button").addEventListener("click", () => {
 });
   </script>
 
+<script>
+document.body.style.backgroundColor = "#f9f9f9";
+document.getElementById("light-overlay").style.display = "none";
+document.getElementById("light-controls").style.display = "none";
+document.getElementById("mode-toggle-checkbox").checked = false;
+const modeCheckbox = document.getElementById("mode-toggle-checkbox");
+
+modeCheckbox.addEventListener("change", () => {
+  const isNight = modeCheckbox.checked;
+
+  document.body.style.backgroundColor = isNight ? "#111" : "#f9f9f9";
+  document.getElementById("light-overlay").style.display = isNight ? "block" : "none";
+  document.getElementById("light-controls").style.display = isNight ? "block" : "none";
+});
+</script>
+
+<script>
+const overlay = document.getElementById("light-overlay");
+const angleInput = document.getElementById("light-angle");
+
+function updateLight() {
+
+  const angle = parseInt(angleInput.value);
 
 
+  const radius = 40;
+  const centerX = 50 + radius * Math.cos((angle * Math.PI) / 180);
+  const centerY = 50 + radius * Math.sin((angle * Math.PI) / 180);
+
+  overlay.style.background = `
+    radial-gradient(
+      circle at ${centerX}% ${centerY}%,
+      rgba(240, 240, 240, 0.1),
+      rgba(0, 0, 0, 0.95) 200%
+    )
+  `;
+}
+
+
+angleInput.addEventListener("input", updateLight);
+
+
+
+updateLight();
+</script>
 
 <script>
 document.getElementById("screenshot-btn").addEventListener("click", () => {
