@@ -719,7 +719,7 @@ document.getElementById("screenshot-btn").addEventListener("click", () => {
   html2canvas(target,{useCORS: true,
   allowTaint: false, backgroundColor: null, scale: 3 }).then(canvas => {
 
-    target.style.transform = prevTransform;
+
     const imgData = canvas.toDataURL("image/png");
 
 
