@@ -129,19 +129,6 @@
         width: 30px;
       }
 
-      #mode-toggle-checkbox {
-        opacity: 0;
-        position: absolute;
-        pointer-events: none;
-      }
-
-      .toggle-container {
-        position: fixed;
-        top: 20px;
-        left: 100px;
-        z-index: 999;
-      }
-
       .toggle-switch {
         display: inline-block;
         width: 60px;
@@ -153,38 +140,60 @@
         transition: background-color 0.3s ease;
       }
 
-      .toggle-switch::before {
-        content: "";
-        width: 24px;
-        height: 24px;
-        background-color: white;
-        border-radius: 50%;
+      .toggle-switch svg {
         position: absolute;
-        top: 3px;
-        left: 3px;
-        transition: transform 0.3s ease;
+        top: 5px;
+        width: 20px;
+        height: 20px;
+        fill: white;
+        pointer-events: none;
+        transition: opacity 0.3s ease, left 0.3s ease;
       }
 
-      .toggle-icon {
-        position: absolute;
-        left: 10px;
-        top: 5px;
-        color: white;
-        font-size: 16px;
-        pointer-events: none;
+      .toggle-switch .sun-icon {
+        left: 6px;
+        opacity: 1;
+      }
+
+      .toggle-switch .moon-icon {
+        left: 34px;
+        opacity: 0;
+      }
+
+      #mode-toggle-checkbox {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+      #mode-toggle-checkbox:checked + .toggle-switch .sun-icon {
+        opacity: 0;
+      }
+
+      #mode-toggle-checkbox:checked + .toggle-switch .moon-icon {
+        opacity: 1;
+      }
+
+      .toggle-switch::before {
+        content: "";
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  left: 4px;
+  bottom: 9px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.4s;
+  z-index: 2;
       }
 
       #mode-toggle-checkbox:checked + .toggle-switch::before {
         transform: translateX(30px);
       }
 
-      #mode-toggle-checkbox:checked + .toggle-switch {
-        background-color: #000;
-      }
 
-      #mode-toggle-checkbox:checked + .toggle-switch .toggle-icon {
-        left: 35px;
-      }
 
       #light-overlay {
         display: none;
@@ -435,7 +444,34 @@
     <div id="main-ui" style="display: none">
       <div class="toggle-container">
         <input type="checkbox" id="mode-toggle-checkbox" />
-        <label for="mode-toggle-checkbox" class="toggle-switch"> </label>
+        <label for="mode-toggle-checkbox" class="toggle-switch"> 
+        <div class="toggle-icon">
+          <span id="icon-wrapper">
+            <span id="sun-icon">
+              <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
+                <circle cx="12" cy="12" r="5" />
+                <g stroke="white" stroke-width="2">
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" />
+                  <line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
+                  <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" />
+                  <line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
+                </g>
+              </svg>
+              
+            </span>
+            <span id="moon-icon" style="display: none;">
+              <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="20" height="20">
+                <path d="M21 12.79A9 9 0 0111.21 3 7 7 0 1012 21a9 9 0 009-8.21z"/>
+              </svg>
+              
+            </span>
+          </span>
+        </label>
+        </div>
       </div>
 
       <div
@@ -720,10 +756,21 @@
       document.getElementById("light-controls").style.display = "none";
       document.getElementById("mode-toggle-checkbox").checked = false;
       const modeCheckbox = document.getElementById("mode-toggle-checkbox");
+const sunIcon = document.getElementById("sun-icon");
+const moonIcon = document.getElementById("moon-icon");
       const priceDisplay = document.getElementById("price-display");
 
       modeCheckbox.addEventListener("change", () => {
         const isNight = modeCheckbox.checked;
+
+        if (isNight) {
+    sunIcon.style.display = "none";
+    moonIcon.style.display = "block";
+  } else {
+    sunIcon.style.display = "block";
+    moonIcon.style.display = "none";
+  }
+
         const nightBg = document.getElementById("night-background");
         const dayBg = document.getElementById("day-background");
         const pricePanel = document.getElementById("price-panel-wrapper");
