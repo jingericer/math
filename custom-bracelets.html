@@ -377,7 +377,7 @@
         height: 420px;
 
         background-size: 450px 450px;
-        background-position: 8px 24px;
+        background-position: center;
         border-radius: 10px;
 
         overflow: hidden;
@@ -849,6 +849,7 @@
       document.getElementById("light-overlay").style.display = "none";
       document.getElementById("light-controls").style.display = "none";
       document.getElementById("mode-toggle-checkbox").checked = false;
+      
       const modeCheckbox = document.getElementById("mode-toggle-checkbox");
 const sunIcon = document.getElementById("sun-icon");
 const moonIcon = document.getElementById("moon-icon");
@@ -1154,8 +1155,8 @@ const moonIcon = document.getElementById("moon-icon");
 
       function addToDesignArea(styleObj, size, shape, imageURL = "") {
         let designArea = document.getElementById("design-area");
-        let centerX = designArea.clientWidth / 2;
-        let centerY = designArea.clientHeight / 2;
+        let centerX = designArea.clientWidth / 2 - 5;
+        let centerY = designArea.clientHeight / 2 - 12;
         let radius = 114;
         let beadWidth = size === "small" ? 30 : 50;
         let beadHeight = beadWidth;
