@@ -947,7 +947,7 @@ const moonIcon = document.getElementById("moon-icon");
             allowTaint: false,
             backgroundColor: null,
           }).then((canvas) => {
-            designArea.style.transform = "";
+            target.style.transform = "";
             const imgData = canvas.toDataURL("image/png");
 
             const link = document.createElement("a");
