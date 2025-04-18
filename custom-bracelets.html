@@ -768,6 +768,9 @@
   const recordBtn = document.getElementById("record-btn");
   const downloadLink = document.getElementById("download-link");
 
+  const originalBgPos = targetElement.style.backgroundPosition;
+  targetElement.style.backgroundPosition = "center";
+
   recordBtn.addEventListener("click", async () => {
     if (recordBtn.dataset.recording === "true") {
 
@@ -825,13 +828,14 @@
       canvasCtx.drawImage(canvasImage, 0, 0, width, height);
     }, 100);
 
+
+
     mediaRecorder.start();
     recordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
     recordBtn.dataset.recording = "true";
-    
+
     setTimeout(() => {
-      targetElement.style.transform = originalTransform;
-      targetElement.style.transformOrigin = originalTransformOrigin;
+      targetElement.style.backgroundPosition = originalBgPos;
     }, 200);
 
   });
