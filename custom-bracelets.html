@@ -718,7 +718,7 @@ document.getElementById("screenshot-btn").addEventListener("click", () => {
   clone.style.background = "#ffffff";
   document.body.appendChild(clone);
   html2canvas(target,{useCORS: true,
-  allowTaint: false, backgroundColor: null, scale: window.devicePixelRatio * 3}).then(canvas => {
+  allowTaint: false, backgroundColor: null}).then(canvas => {
 
 
     const imgData = canvas.toDataURL("image/png");
