@@ -709,9 +709,13 @@ updateLight();
 
 <script>
 document.getElementById("screenshot-btn").addEventListener("click", () => {
-  const target = document.getElementById("zoom-wrapper"); // or "zoom-wrapper" for full layout
-  const prevTransform = target.style.transform;
-  target.style.transform = "scale(1)";
+  const target = document.getElementById("zoom-wrapper");
+  const clone = original.cloneNode(true);
+  clone.style.transform = "scale(1)";
+  clone.style.transformOrigin = "top center";
+  clone.style.position = "absolute";
+  clone.style.left = "-9999px";
+  document.body.appendChild(clone);
   html2canvas(target,{useCORS: true,
   allowTaint: false, backgroundColor: null, scale: 3 }).then(canvas => {
 
@@ -723,6 +727,7 @@ document.getElementById("screenshot-btn").addEventListener("click", () => {
     link.download = "gemistry-design.png";
     link.href = imgData;
     link.click();
+    document.body.removeChild(clone);
 
   });
 });
