@@ -491,6 +491,15 @@
         >
           <i class="fa-solid fa-camera"></i>
         </button>
+        <button
+  id="record-btn"
+  style="font-size: 20px; padding: 10px; border-radius: 8px"
+  title="Start/Stop Recording"
+  data-recording="false"
+>
+  <i class="fa-solid fa-circle-dot"></i>
+</button>
+<a id="download-link" style="display: none"></a>
       </div>
       <div
         id="zoom-wrapper"
@@ -749,6 +758,75 @@
         clearInterval(interval);
       });
     </script>
+
+
+<script>
+  let mediaRecorder, recordedChunks = [], recordingCanvas, canvasCtx, intervalId;
+  const targetElement = document.getElementById("zoom-wrapper");
+  const recordBtn = document.getElementById("record-btn");
+  const downloadLink = document.getElementById("download-link");
+
+  recordBtn.addEventListener("click", async () => {
+    if (recordBtn.dataset.recording === "true") {
+
+      clearInterval(intervalId);
+      mediaRecorder.stop();
+      recordBtn.innerHTML = '<i class="fa-solid fa-circle-dot"></i>';
+      recordBtn.dataset.recording = "false";
+      return;
+    }
+
+
+    const rect = targetElement.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+
+    recordingCanvas = document.createElement("canvas");
+    recordingCanvas.width = width;
+    recordingCanvas.height = height;
+    canvasCtx = recordingCanvas.getContext("2d");
+
+
+    const stream = recordingCanvas.captureStream(10); // 10fps
+    recordedChunks = [];
+
+    mediaRecorder = new MediaRecorder(stream, {
+      mimeType: "video/webm",
+    });
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: "video/webm" });
+      const url = URL.createObjectURL(blob);
+      downloadLink.href = url;
+      downloadLink.download = "bracelet-recording.webm";
+      downloadLink.click();
+    };
+
+ 
+    intervalId = setInterval(async () => {
+      const canvasImage = await html2canvas(targetElement, {
+        useCORS: true,
+        backgroundColor: null,
+        scale: 1,
+      });
+
+      canvasCtx.clearRect(0, 0, width, height);
+      canvasCtx.drawImage(canvasImage, 0, 0, width, height);
+    }, 100);
+
+    mediaRecorder.start();
+    recordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
+    recordBtn.dataset.recording = "true";
+  });
+</script>
+
+
+
 
     <script>
       document.body.style.backgroundColor = "#f9f9f9";
