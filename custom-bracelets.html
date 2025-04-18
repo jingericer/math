@@ -812,10 +812,10 @@ function updateTimerDisplay() {
     recordingCanvas = document.createElement("canvas");
     recordingCanvas.width = width;
     recordingCanvas.height = height;
-    canvasCtx = recordingCanvas.getContext("webgl");
+    canvasCtx = recordingCanvas.getContext("2d");
 
 
-    const stream = recordingCanvas.captureStream(60);
+    const stream = recordingCanvas.captureStream(30);
     recordedChunks = [];
 
     mediaRecorder = new MediaRecorder(stream, {
@@ -843,7 +843,7 @@ function updateTimerDisplay() {
       const canvasImage = await html2canvas(targetElement, {
         useCORS: true,
         backgroundColor: null,
-        scale: 1,
+        scale: 2,
       });
 
       canvasCtx.clearRect(0, 0, width, height);
