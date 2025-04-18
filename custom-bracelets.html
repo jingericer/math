@@ -7,6 +7,24 @@
   <title>Jewel Design Tool</title>
   <style>
 
+#night-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 120vw;
+  height: 100vh;
+  background-image: url('bg1.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: calc(100% + 350px) center;
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  display: none;
+}
+
+
+
 #lamp-wrapper {
       position: relative;
       width: 120px;
@@ -344,7 +362,7 @@ button:hover {
 
     <div class="loading-text">Your bead is being crafted... ⏳</div>
   </div>
-
+  <div id="night-background"></div>
  <div id="main-ui" style="display: none;">
 
 <div class="toggle-container">
@@ -465,6 +483,7 @@ button:hover {
     const lampArm = document.getElementById("lamp-arm");
     const angleDisplay = document.getElementById("angle-display");
 
+
     angleInput.addEventListener("input", (e) => {
       const angle = parseInt(e.target.value);
       lampArm.style.transform = `rotate(${angle+90}deg)`;
@@ -555,6 +574,8 @@ const mappedAngle = mapDragAngleToLightAngle(angle);
 
 <audio id="background-audio" src="intheforest.mp3" loop></audio>
 
+
+
 </div>
 
   <script>
@@ -593,11 +614,11 @@ const modeCheckbox = document.getElementById("mode-toggle-checkbox");
 
 modeCheckbox.addEventListener("change", () => {
   const isNight = modeCheckbox.checked;
-
+  const nightBg = document.getElementById("night-background");
   document.body.style.backgroundColor = isNight ? "#111" : "#f9f9f9";
   document.getElementById("light-overlay").style.display = isNight ? "block" : "none";
   document.getElementById("light-controls").style.display = isNight ? "block" : "none";
-
+  nightBg.style.display = isNight ? "block" : "none";
 if (isNight) updateLight(parseInt(document.getElementById("angle").value));
 });
 </script>
@@ -688,7 +709,7 @@ function playNextTrack() {
 }
 
 
-let zoomLevel = 1.4;
+let zoomLevel = 1.3;
   const wrapper = document.getElementById("zoom-wrapper");
   wrapper.style.transform = `scale(${zoomLevel})`;
 
@@ -1007,5 +1028,7 @@ function clearDesignArea() {
       designArea.classList.toggle("light");
     }
   </script>
+
+
 </body>
 </html>
