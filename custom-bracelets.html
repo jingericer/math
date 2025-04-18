@@ -815,7 +815,7 @@ function updateTimerDisplay() {
     canvasCtx = recordingCanvas.getContext("2d");
 
 
-    const stream = recordingCanvas.captureStream(10); // 10fps
+    const stream = recordingCanvas.captureStream(30);
     recordedChunks = [];
 
     mediaRecorder = new MediaRecorder(stream, {
