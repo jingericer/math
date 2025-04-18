@@ -710,7 +710,7 @@ updateLight();
 <script>
 document.getElementById("screenshot-btn").addEventListener("click", () => {
   const target = document.getElementById("zoom-wrapper");
-  const clone = original.cloneNode(true);
+  const clone = target.cloneNode(true);
   clone.style.transform = "scale(1)";
   clone.style.transformOrigin = "top center";
   clone.style.position = "absolute";
