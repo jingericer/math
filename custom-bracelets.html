@@ -40,11 +40,11 @@
     }
 
     .toggle-container {
-
-    top: 20px;
-    left: 20px;
-    z-index: 200;
-    }
+  position: fixed;
+  top: 20px;
+  left: 30%;
+  z-index: 1001;
+}
 
     #price-display.night {
       background: #222;
@@ -229,17 +229,14 @@
 
     .bead-library,
     .design-area {
-      border: 1px solid #ccc;
-      padding: 20px;
-      width: 400px;
-    }
-
-    .bead-library,
-    .design-area {
+      position: relative;
+      top: 40px;
       background: white;
       border-radius: 14px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
       padding: 20px;
+      border: 1px solid #ccc;
+      width: 400px;
     }
 
     @keyframes rotate-bead-hover {
@@ -519,11 +516,12 @@
 
   <div id="zoom-wrapper" style="
           display: flex;
+          align-items: center;
           gap: 20px;
           transform: scale(1);
           transform-origin: top center;
         ">
-    <div class="bead-library" style="background-color: #e0e0e5; padding: 15px; border-radius: 10px">
+    <div class="bead-library" style="background-color: #e0e0e5" >
       <button onclick="clearDesignArea()" style="margin-bottom: 10px">
         Clean Tray
       </button>
@@ -573,7 +571,7 @@
     <div id="music-wrapper" onclick="toggleMusic()" style="
             position: fixed;
             right: 16px;
-            top: 350px;
+            top: 250px;
             width: 80px;
             height: 100px;
             cursor: pointer;
