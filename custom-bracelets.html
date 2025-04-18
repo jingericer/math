@@ -710,11 +710,12 @@ updateLight();
 <script>
 document.getElementById("screenshot-btn").addEventListener("click", () => {
   const target = document.getElementById("zoom-wrapper"); // or "zoom-wrapper" for full layout
-
+  const prevTransform = target.style.transform;
+  target.style.transform = "scale(1)";
   html2canvas(target,{useCORS: true,
   allowTaint: false, backgroundColor: null, scale: 3 }).then(canvas => {
 
-
+    target.style.transform = prevTransform;
     const imgData = canvas.toDataURL("image/png");
 
 
