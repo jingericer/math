@@ -23,6 +23,62 @@
   display: none;
 }
 
+#day-background {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 120vw;
+  height: 100vh;
+  background-image: url('bg2.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom right;
+  opacity: 0.3;
+  z-index: 0;
+  pointer-events: none;
+  display: block;
+}
+
+
+#price-display.night {
+  background: #222;
+  color: #eee;
+  border-color: #444;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+#price-display {
+  background: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  font-family: monospace;
+  max-height: 100%;
+  overflow-y: auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  border-radius: 8px;
+  margin-right: 2px;
+}
+
+#price-panel-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 0;
+  height: 60vh;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.3s ease;
+  background: white;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.1);
+  padding: 16px;
+}
+
+#price-panel-wrapper.night {
+  background: #181818;
+  box-shadow: -4px 0 12px rgba(255, 255, 255, 0.05);
+}
 
 
 #lamp-wrapper {
@@ -49,7 +105,7 @@
       height: 80px;
       background: #999;
       transform-origin: bottom center;
-      transform: rotate(0deg);
+      transform: rotate(30deg);
     }
 
     #lamp-head {
@@ -262,6 +318,7 @@ display: none;
       background-color: black;
       overflow: hidden;
       flex-direction: column;
+      z-index: 1;
     }
 @keyframes rotate-bead {
   from { transform: translate(-50%, -50%) rotate(0deg); }
@@ -362,6 +419,7 @@ button:hover {
 
     <div class="loading-text">Your bead is being crafted... ⏳</div>
   </div>
+  <div id="day-background"></div>
   <div id="night-background"></div>
  <div id="main-ui" style="display: none;">
 
@@ -471,7 +529,7 @@ button:hover {
       </div>
     </div>
     <div id="angle-control" style="display: none;">
-      <input type="range" id="angle" min="230" max="300" value="250">
+      <input type="range" id="angle" min="230" max="300" value="300">
     </div>
   </div>
 
@@ -537,7 +595,7 @@ const mappedAngle = mapDragAngleToLightAngle(angle);
 
 
 
-<div id="price-panel-wrapper" style="position: fixed; top: 20px; right: 0; height: 60vh; z-index: 20; display: flex; align-items: flex-start; transition: transform 0.3s ease;">
+<div id="price-panel-wrapper">
   <!-- handle -->
   <div id="price-toggle-handle" onclick="togglePricePanel()" style="
     width: 10px;
@@ -555,18 +613,7 @@ const mappedAngle = mapDragAngleToLightAngle(angle);
   </div>
 
   <!-- price panel -->
-  <div id="price-display" style="
-    background: #fff;
-    padding: 10px;
-    border: 1px solid #ccc;
-    font-family: monospace;
-    max-height: 100%;
-    overflow-y: auto;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  box-sizing: border-box;
-  border-radius: 8px;
-  margin-right: 2px; 
-  "></div>
+  <div id="price-display"></div>
 </div>
 
 
@@ -611,14 +658,21 @@ document.getElementById("light-overlay").style.display = "none";
 document.getElementById("light-controls").style.display = "none";
 document.getElementById("mode-toggle-checkbox").checked = false;
 const modeCheckbox = document.getElementById("mode-toggle-checkbox");
+const priceDisplay = document.getElementById("price-display");
 
 modeCheckbox.addEventListener("change", () => {
   const isNight = modeCheckbox.checked;
   const nightBg = document.getElementById("night-background");
+  const dayBg = document.getElementById("day-background");
+  const pricePanel = document.getElementById("price-panel-wrapper");
+  pricePanel.classList.toggle("night", isNight);
+
   document.body.style.backgroundColor = isNight ? "#111" : "#f9f9f9";
   document.getElementById("light-overlay").style.display = isNight ? "block" : "none";
   document.getElementById("light-controls").style.display = isNight ? "block" : "none";
+  dayBg.style.display = isNight ? "none" : "block";
   nightBg.style.display = isNight ? "block" : "none";
+  priceDisplay.classList.toggle("night", isNight);
 if (isNight) updateLight(parseInt(document.getElementById("angle").value));
 });
 </script>
@@ -658,7 +712,7 @@ document.getElementById("screenshot-btn").addEventListener("click", () => {
   const target = document.getElementById("zoom-wrapper"); // or "zoom-wrapper" for full layout
 
   html2canvas(target,{useCORS: true,
-  allowTaint: false, backgroundColor: null }).then(canvas => {
+  allowTaint: false, backgroundColor: null, scale: 3 }).then(canvas => {
 
 
     const imgData = canvas.toDataURL("image/png");
