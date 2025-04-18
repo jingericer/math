@@ -809,6 +809,10 @@
       downloadLink.click();
     };
 
+    const originalTransform = targetElement.style.transform;
+    const originalTransformOrigin = targetElement.style.transformOrigin;
+    targetElement.style.transform = "none";
+    targetElement.style.transformOrigin = "top left";
  
     intervalId = setInterval(async () => {
       const canvasImage = await html2canvas(targetElement, {
@@ -824,6 +828,12 @@
     mediaRecorder.start();
     recordBtn.innerHTML = '<i class="fa-solid fa-square"></i>';
     recordBtn.dataset.recording = "true";
+    
+    setTimeout(() => {
+      targetElement.style.transform = originalTransform;
+      targetElement.style.transformOrigin = originalTransformOrigin;
+    }, 200);
+
   });
 </script>
 
