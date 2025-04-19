@@ -266,10 +266,39 @@
       padding: 16px;
     }
 
+    #price-toggle-handle {
+  position: absolute;
+  left: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 60px;
+  background: white;
+  border-radius: 8px 0 0 8px;
+  box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 999;
+}
 
-    #price-toggle-handle:hover {
-      background: #666;
-    }
+#price-panel-wrapper.night #price-toggle-handle {
+  background: #222;
+  color: #eee;
+  box-shadow: 2px 0 8px rgba(255, 255, 255, 0.05);
+}
+
+#price-toggle-handle:hover {
+  background: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+#price-arrow-icon {
+  font-size: 16px;
+  color: #444;
+  transition: transform 0.3s ease;
+}
 
     #tray-image {
       position: absolute;
@@ -689,18 +718,8 @@
 
   <div id="price-panel-wrapper">
     <!-- handle -->
-    <div id="price-toggle-handle" onclick="togglePricePanel()" style="
-            width: 10px;
-            height: 4%;
-            background: #888;
-            cursor: pointer;
-            border-radius: 4px 0 0 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-          ">
-      <span id="price-arrow">&lt;</span>
+    <div id="price-toggle-handle" onclick="togglePricePanel()" title="Toggle Panel">
+      <i class="fa-solid fa-chevron-right" id="price-arrow-icon"></i>
     </div>
 
     <!-- price panel -->
@@ -975,16 +994,16 @@
     }
     function togglePricePanel() {
       const wrapper = document.getElementById("price-panel-wrapper");
-      const arrow = document.getElementById("price-arrow");
+      const arrowIcon = document.getElementById("price-arrow-icon");
       isPriceVisible = !isPriceVisible;
 
       if (isPriceVisible) {
-        wrapper.style.transform = "translateX(0)";
-        arrow.textContent = "<";
-      } else {
-        wrapper.style.transform = "translateX(85%)";
-        arrow.textContent = ">";
-      }
+  wrapper.style.transform = "translateX(0)";
+  arrowIcon.className = "fa-solid fa-chevron-right";
+} else {
+  wrapper.style.transform = "translateX(85%)";
+  arrowIcon.className = "fa-solid fa-chevron-left";
+}
     }
 
     function showToast(msg) {
