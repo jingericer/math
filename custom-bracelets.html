@@ -593,7 +593,7 @@
           Change Bead Tray
         </button>
         <div style="margin-top: 10px">
-          <input type="number" id="bead-count" value="18" min="1" max="50" />
+          <input type="number" id="bead-count" value="18" min="14" max="20" />
           <button onclick="updateBeadCount()">Set Bead Count & Start</button>
         </div>
       </section>
@@ -602,8 +602,8 @@
       </section>
       <div id="toast-message" style="
               position: fixed;
-              bottom: 30px;
-              right: 30px;
+              bottom: 10px;
+              right: 200px;
               background: rgba(0, 0, 0, 0.7);
               color: white;
               padding: 10px 18px;
@@ -1077,6 +1077,10 @@
     function updateBeadCount() {
       beadCount =
         parseInt(document.getElementById("bead-count").value, 10) || 18;
+        if (beadCount < 14 || beadCount > 20) {
+          showToast("Bead count must be between 14 and 20.");
+          return;
+  }
       beadPositions = Array(beadCount).fill(null);
       clearDesignArea();
     }
@@ -1215,13 +1219,14 @@
       let centerX = designArea.clientWidth / 2 - 2;
       let centerY = designArea.clientHeight / 2 - 6;
       let radius = 114;
+      let radiusAdjustment = (20 - beadCount) * 3.2;
       let beadWidth = size === "small" ? 30 : 50;
       let beadHeight = beadWidth;
 
       let index = getEmptyPosition();
       if (index === -1) return;
       let angle = (index / beadCount) * 2 * Math.PI;
-      let effectiveRadius = radius;
+      let effectiveRadius = radius - radiusAdjustment;
       if (imageURL && imageURL.includes("pendant")) {
         effectiveRadius += 20;
       }
